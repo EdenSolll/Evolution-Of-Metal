@@ -1,4 +1,5 @@
 import Canvas from '../components/canvas'
+
 const Home = () => {
     return (
         <div>
