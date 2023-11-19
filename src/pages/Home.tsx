@@ -1,5 +1,4 @@
-import Canvas from "../components/canvas.tsx"
-
+import Canvas from '../components/canvas'
 const Home = () => {
     return (
         <div>

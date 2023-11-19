@@ -1,5 +1,6 @@
 import React from "react"
 import { Container } from "reactstrap"
+import NavBar from "../components/NavBar"
 
 type Props = {
     children: React.ReactNode
@@ -7,8 +8,9 @@ type Props = {
 
 export const PageContainer: React.FC<Props> = ({ children }) => {
     return (
-        <div>
+        <div style={{ marginBottom: '90px' }}>
             <Container className="main" fluid>
+                <NavBar />
                 <Container>{children}</Container>
             </Container>
         </div>
