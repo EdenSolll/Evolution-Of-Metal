@@ -10,10 +10,15 @@
     "preview": "vite preview"
   },
   "dependencies": {
+    "all": "^0.0.0",
+    "hls.js": "^1.4.12",
     "konva": "^9.2.3",
+    "mediaelement": "^7.0.2",
     "react": "^18.2.0",
     "react-dom": "^18.2.0",
-    "react-konva": "^18.2.10"
+    "react-konva": "^18.2.10",
+    "react-router-dom": "^6.19.0",
+    "reactstrap": "^9.2.1"
   },
   "devDependencies": {
     "@types/react": "^18.2.37",
