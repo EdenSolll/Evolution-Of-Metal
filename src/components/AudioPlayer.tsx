@@ -1,6 +1,5 @@
 import { useRef, useState } from 'react';
 import { tracks } from '../data/tracks';
-
 import DisplayTrack from './DisplayTrack';
 import Controls from './Controls';
 import ProgressBar from './ProgressBar';
@@ -29,7 +28,7 @@ const AudioPlayer = () => {
 
   return (
     <>
-      <div className="audio-player">
+      <div className="audio-player" style={{ display: 'flex', justifyContent: 'left', alignItems: 'center' }}>
         <div className="inner">
           <DisplayTrack
             {...{
@@ -61,4 +60,5 @@ const AudioPlayer = () => {
     </>
   );
 };
+
 export default AudioPlayer;

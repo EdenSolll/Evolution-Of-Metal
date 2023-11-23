@@ -1,10 +1,7 @@
 import { useState, useEffect, useRef, useCallback } from 'react';
 
 import {
-  IoPlayBackSharp,
   IoPlayForwardSharp,
-  IoPlaySkipBackSharp,
-  IoPlaySkipForwardSharp,
   IoPlaySharp,
   IoPauseSharp,
 } from 'react-icons/io5';
@@ -25,11 +22,21 @@ const Controls = ({
   setTrackIndex,
   setCurrentTrack,
   handleNext,
+}: {
+  audioRef: React.MutableRefObject<HTMLAudioElement>;
+  progressBarRef: React.MutableRefObject<HTMLInputElement>;
+  duration: number;
+  setTimeProgress: React.Dispatch<React.SetStateAction<number>>;
+  tracks: Array<any>; // Change to your actual type
+  trackIndex: number;
+  setTrackIndex: React.Dispatch<React.SetStateAction<number>>;
+  setCurrentTrack: React.Dispatch<React.SetStateAction<any>>; // Change to your actual type
+  handleNext: () => void;
 }) => {
-
   const [isPlaying, setIsPlaying] = useState(false);
   const [volume, setVolume] = useState(60);
   const [muteVolume, setMuteVolume] = useState(false);
+  const [showVolumeBar, setShowVolumeBar] = useState(false);
 
   const togglePlayPause = () => {
     setIsPlaying((prev) => !prev);
@@ -38,7 +45,7 @@ const Controls = ({
   const playAnimationRef = useRef();
 
   const repeat = useCallback(() => {
-    const currentTime = audioRef.current.currentTime;
+    const currentTime = audioRef.current?.currentTime ?? 0;
     setTimeProgress(currentTime);
     progressBarRef.current.value = currentTime;
     progressBarRef.current.style.setProperty(
@@ -47,64 +54,33 @@ const Controls = ({
     );
 
     playAnimationRef.current = requestAnimationFrame(repeat);
-  }, [audioRef, duration, progressBarRef, setTimeProgress]);
-
-  useEffect(() => {
+  }, [audioRef, duration, progressBarRef, setTimeProgress]);  useEffect(() => {
     if (isPlaying) {
-      audioRef.current.play();
+      audioRef.current?.play();
     } else {
-      audioRef.current.pause();
+      audioRef.current?.pause();
     }
     playAnimationRef.current = requestAnimationFrame(repeat);
   }, [isPlaying, audioRef, repeat]);
 
-  const skipForward = () => {
-    audioRef.current.currentTime += 15;
-  };
-
-  const skipBackward = () => {
-    audioRef.current.currentTime -= 15;
-  };
-
-  const handlePrevious = () => {
-    if (trackIndex === 0) {
-      let lastTrackIndex = tracks.length - 1;
-      setTrackIndex(lastTrackIndex);
-      setCurrentTrack(tracks[lastTrackIndex]);
-    } else {
-      setTrackIndex((prev) => prev - 1);
-      setCurrentTrack(tracks[trackIndex - 1]);
-    }
-  };
-
   useEffect(() => {
-    if (audioRef) {
+    if (audioRef.current) {
       audioRef.current.volume = volume / 100;
       audioRef.current.muted = muteVolume;
     }
   }, [volume, audioRef, muteVolume]);
 
   return (
-    <div className="controls-wrapper">
-      <div className="controls">
-        <button onClick={handlePrevious}>
-          <IoPlaySkipBackSharp />
-        </button>
-        <button onClick={skipBackward}>
-          <IoPlayBackSharp />
-        </button>
-
+    <div className="controls-wrapper" style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
+      <div className="controls" style={{ display: 'flex', gap: '10px' }}>
         <button onClick={togglePlayPause}>
           {isPlaying ? <IoPauseSharp /> : <IoPlaySharp />}
         </button>
-        <button onClick={skipForward}>
+        <button onClick={handleNext}>
           <IoPlayForwardSharp />
         </button>
-        <button onClick={handleNext}>
-          <IoPlaySkipForwardSharp />
-        </button>
       </div>
-      <div className="volume">
+      <div className="volume" style={{ position: 'relative' }} onMouseEnter={() => setShowVolumeBar(true)} onMouseLeave={() => setShowVolumeBar(false)}>
         <button onClick={() => setMuteVolume((prev) => !prev)}>
           {muteVolume || volume < 5 ? (
             <IoMdVolumeOff />
@@ -114,16 +90,22 @@ const Controls = ({
             <IoMdVolumeHigh />
           )}
         </button>
-        <input
-          type="range"
-          min={0}
-          max={100}
-          value={volume}
-          onChange={(e) => setVolume(e.target.value)}
-          style={{
-            background: `linear-gradient(to right, #f50 ${volume}%, #ccc ${volume}%)`,
-          }}
-        />
+        {showVolumeBar && (
+          <input
+            type="range"
+            min={0}
+            max={100}
+            value={volume}
+            onChange={(e) => setVolume(parseInt(e.target.value, 10))}
+            style={{
+              position: 'absolute',
+              top: 0,
+              left: '50%',
+              transform: 'translateX(-50%) rotate(270deg)',
+              background: `linear-gradient(to bottom, #f50 ${volume}%, #ccc ${volume}%)`,
+            }}
+          />
+        )}
       </div>
     </div>
   );
