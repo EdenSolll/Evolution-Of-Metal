@@ -6,6 +6,7 @@ import {
   NavbarToggler,
 } from 'reactstrap';
 import { NavLink } from 'react-router-dom';
+import AudioPlayer from './AudioPlayer';
 
 const NavBar: React.FC = () => {
   const [isOpen, setIsOpen] = useState<boolean>(false);
@@ -22,7 +23,7 @@ const NavBar: React.FC = () => {
           </NavLink>
           <NavbarToggler onClick={toggle} />
             <Nav navbar>
-
+              <AudioPlayer />
             </Nav>
           </Container>
       </Navbar>
