@@ -8,7 +8,7 @@ type Props = {
 
 export const PageContainer: React.FC<Props> = ({ children }) => {
     return (
-        <div style={{ marginBottom: '90px' }}>
+        <div style={{ marginTop: '90px' }}>
             <Container className="main" fluid>
                 <NavBar />
                 <Container>{children}</Container>

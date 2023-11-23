@@ -1,3 +1,6 @@
+import './styles/index.css';
+import './styles/customize-progress-bar.css';
+
 :root {
   font-family: Inter, system-ui, Avenir, Helvetica, Arial, sans-serif;
   line-height: 1.5;
@@ -11,6 +14,18 @@
   text-rendering: optimizeLegibility;
   -webkit-font-smoothing: antialiased;
   -moz-osx-font-smoothing: grayscale;
+}
+
+input[type="range"] {
+  --range-progress: 0;
+  /* ... */
+}
+
+input[type="range"]::before {
+  /* ... */
+  background: #f50;
+  width: var(--range-progress);
+  /* ... */
 }
 
 a {
