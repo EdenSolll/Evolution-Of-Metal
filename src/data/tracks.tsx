@@ -1,10 +1,9 @@
-// audio files
+import RainInBlood from './01.-Angel Of Death.flac'
 
 export const tracks = [
   {
-    title: 'Trinix ft Rushawn – Its a beautiful day',
-    src: beautiful,
-    author: 'Trinix ft Rushawn',
+    title: 'Angel Of Death',
+    src: RainInBlood,
+    author: 'Slayer',
   },
-  // ...
-]
+];
