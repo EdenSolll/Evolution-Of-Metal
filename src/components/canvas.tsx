@@ -1,4 +1,4 @@
-import { useEffect, useState, useRef } from 'react';
+import React, { useEffect, useState, useRef } from 'react';
 import { Stage, Layer, Image } from 'react-konva';
 import Konva from 'konva';
 
@@ -15,8 +15,21 @@ export default function App() {
     img.onload = () => setImage(img);
   }, []);
 
-  const handleDragStart = () => {
-  };
+  useEffect(() => {
+    if (image.width && image.height) {
+      const scaleX = window.innerWidth / image.width;
+      const scaleY = window.innerHeight / image.height;
+      const initialScale = Math.min(scaleX, scaleY);
+      setScale(initialScale);
+
+      // Calculate initial position to center the image
+      const initialX = (window.innerWidth - image.width * initialScale) / 2;
+      const initialY = (window.innerHeight - image.height * initialScale) / 2;
+      setPosition({ x: initialX, y: initialY });
+    }
+  }, [image.width, image.height]);
+
+  const handleDragStart = () => {};
 
   const handleDragEnd = (e: Konva.KonvaEventObject<DragEvent>) => {
     setPosition({ x: e.target.x(), y: e.target.y() });

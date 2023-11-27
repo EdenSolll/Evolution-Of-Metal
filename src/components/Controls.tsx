@@ -54,7 +54,8 @@ const Controls = ({
     );
 
     playAnimationRef.current = requestAnimationFrame(repeat);
-  }, [audioRef, duration, progressBarRef, setTimeProgress]);  useEffect(() => {
+  }, [audioRef, duration, progressBarRef, setTimeProgress]);
+  useEffect(() => {
     if (isPlaying) {
       audioRef.current?.play();
     } else {
@@ -73,15 +74,15 @@ const Controls = ({
   return (
     <div className="controls-wrapper" style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
       <div className="controls" style={{ display: 'flex', gap: '10px' }}>
-        <button onClick={togglePlayPause}>
+        <button onClick={togglePlayPause} style={{ color: '#dbdcdd' }}>
           {isPlaying ? <IoPauseSharp /> : <IoPlaySharp />}
         </button>
-        <button onClick={handleNext}>
+        <button onClick={handleNext} style={{ color: '#dbdcdd' }}>
           <IoPlayForwardSharp />
         </button>
       </div>
       <div className="volume" style={{ position: 'relative' }} onMouseEnter={() => setShowVolumeBar(true)} onMouseLeave={() => setShowVolumeBar(false)}>
-        <button onClick={() => setMuteVolume((prev) => !prev)}>
+        <button onClick={() => setMuteVolume((prev) => !prev)} style={{ color: '#dbdcdd' }}>
           {muteVolume || volume < 5 ? (
             <IoMdVolumeOff />
           ) : volume < 40 ? (
@@ -99,10 +100,10 @@ const Controls = ({
             onChange={(e) => setVolume(parseInt(e.target.value, 10))}
             style={{
               position: 'absolute',
-              top: 0,
+              height: 80,
+              top: -115,
               left: '50%',
               transform: 'translateX(-50%) rotate(270deg)',
-              background: `linear-gradient(to bottom, #f50 ${volume}%, #ccc ${volume}%)`,
             }}
           />
         )}

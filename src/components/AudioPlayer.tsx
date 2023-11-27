@@ -28,33 +28,42 @@ const AudioPlayer = () => {
 
   return (
     <>
-      <div className="audio-player" style={{ display: 'flex', justifyContent: 'left', alignItems: 'center' }}>
-        <div className="inner">
-          <DisplayTrack
-            {...{
-              currentTrack,
-              audioRef,
-              setDuration,
-              progressBarRef,
-              handleNext,
-            }}
-          />
-          <Controls
-            {...{
-              audioRef,
-              progressBarRef,
-              duration,
-              setTimeProgress,
-              tracks,
-              trackIndex,
-              setTrackIndex,
-              setCurrentTrack,
-              handleNext,
-            }}
-          />
-          <ProgressBar
-            {...{ progressBarRef, audioRef, timeProgress, duration }}
-          />
+      <div
+        className="audio-player-wrapper"
+        style={{
+          display: 'flex',
+          flexDirection: 'column',
+          alignItems: 'left',
+        }}
+      >
+        <div className="audio player" style={{ display: 'flex', gap: '10px' }}>
+          <div className="inner" style={{ display: 'flex', flexDirection: 'row', alignItems: 'left', gap: '10px' }}>
+            <Controls
+              {...{
+                audioRef,
+                progressBarRef,
+                duration,
+                setTimeProgress,
+                tracks,
+                trackIndex,
+                setTrackIndex,
+                setCurrentTrack,
+                handleNext,
+              }}
+            />
+            <ProgressBar
+              {...{ progressBarRef, audioRef, timeProgress, duration }}
+              />
+            <DisplayTrack
+              {...{
+                currentTrack,
+                audioRef,
+                setDuration,
+                progressBarRef,
+                handleNext,
+              }}
+            />
+          </div>
         </div>
       </div>
     </>

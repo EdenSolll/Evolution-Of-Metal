@@ -80,15 +80,14 @@ button:focus-visible {
   outline: 4px auto -webkit-focus-ring-color;
 }
 
-@media (prefers-color-scheme: light) {
-  :root {
-    color: #213547;
-    background-color: #ffffff;
-  }
-  a:hover {
-    color: #747bff;
-  }
-  button {
-    background-color: #f9f9f9;
-  }
+#showyear {
+	font-weight:bold;
+	font-size:75px;
+	font-family: 'Helvetica', sans-serif;
+	float:left;
+	position:absolute;
+	top:-20px;
+	right:65%;
+	z-index:99999;
+	opacity:0.3;
 }
