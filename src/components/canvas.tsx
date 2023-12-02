@@ -1,81 +1,40 @@
-import React, { useEffect, useState, useRef } from 'react';
-import { Stage, Layer, Image } from 'react-konva';
-import Konva from 'konva';
+import React, { useEffect, useState } from 'react';
+import { Stage, Layer, Image, Line } from 'react-konva';
 
-export default function App() {
-  const [image, setImage] = useState(new window.Image());
-  const [scale, setScale] = useState(1);
-  const [position, setPosition] = useState({ x: 0, y: 0 });
-  const stageRef = useRef<Konva.Stage | null>(null);
+const CanvasWithLines = ({ imageUrl }) => {
+  const [lines, setLines] = useState([]);
+  const [image, setImage] = useState(null);
 
   useEffect(() => {
     const img = new window.Image();
-    img.src =
-      'https://external-content.duckduckgo.com/iu/?u=https%3A%2F%2Fwallpaperaccess.com%2Ffull%2F664794.jpg&f=1&nofb=1&ipt=2052f86d8afcde4e481f8dc86b8670d062a65e7dac1bacde2ff0bdd5c97a6090&ipo=images';
-    img.onload = () => setImage(img);
-  }, []);
-
-  useEffect(() => {
-    if (image.width && image.height) {
-      const scaleX = window.innerWidth / image.width;
-      const scaleY = window.innerHeight / image.height;
-      const initialScale = Math.min(scaleX, scaleY);
-      setScale(initialScale);
-
-      // Calculate initial position to center the image
-      const initialX = (window.innerWidth - image.width * initialScale) / 2;
-      const initialY = (window.innerHeight - image.height * initialScale) / 2;
-      setPosition({ x: initialX, y: initialY });
-    }
-  }, [image.width, image.height]);
-
-  const handleDragStart = () => {};
-
-  const handleDragEnd = (e: Konva.KonvaEventObject<DragEvent>) => {
-    setPosition({ x: e.target.x(), y: e.target.y() });
-  };
-
-  const handleWheel = (e: Konva.KonvaEventObject<WheelEvent>) => {
-    e.evt.preventDefault();
-    const oldScale = scale;
-    const pointer = stageRef.current?.getPointerPosition();
-
-    if (!pointer) {
-      return;
-    }
-
-    const newScale = e.evt.deltaY > 0 ? oldScale * 1.1 : oldScale / 1.1;
-    setScale(newScale);
-
-    const newPos = {
-      x: pointer.x - ((pointer.x - position.x) / oldScale) * newScale,
-      y: pointer.y - ((pointer.y - position.y) / oldScale) * newScale,
+    img.src = imageUrl;
+    img.onload = () => {
+      setImage(img);
+      // Example: Set initial lines data
+      setLines([
+        { x1: 100, y1: 100, x2: 200, y2: 200 },
+        // Add more lines as needed
+      ]);
     };
-    setPosition(newPos);
-  };
+  }, [imageUrl]);
 
   return (
-    <Stage
-      width={window.innerWidth}
-      height={window.innerHeight}
-      ref={stageRef}
-      draggable
-      onDragStart={handleDragStart}
-      onDragEnd={handleDragEnd}
-      onWheel={handleWheel}
-    >
+    <Stage width={window.innerWidth} height={window.innerHeight}>
       <Layer>
-        <Image
-          x={position.x}
-          y={position.y}
-          image={image}
-          width={image.width * scale}
-          height={image.height * scale}
-          draggable
-          onDragStart={handleDragStart}
-          onDragEnd={handleDragEnd}
-        />
+        <Image image={image} />
+        {lines.map((line, index) => (
+          <Line
+            key={index}
+            points={[line.x1, line.y1, line.x2, line.y2]}
+            stroke="green"
+            strokeWidth={5}
+            tension={0.5}
+            lineCap="round"
+          />
+        ))}
       </Layer>
     </Stage>
   );
-}
+};
+
+export default CanvasWithLines;
