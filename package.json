@@ -11,21 +11,25 @@
   },
   "dependencies": {
     "all": "^0.0.0",
+    "hawk": "^9.0.1",
     "hls.js": "^1.4.12",
     "konva": "^9.2.3",
     "leaflet": "^1.9.4",
+    "LeafletSlider": "github:dwilhelm89/LeafletSlider",
     "mediaelement": "^7.0.2",
     "react": "^18.2.0",
     "react-dom": "^18.2.0",
     "react-icons": "^4.12.0",
     "react-konva": "^18.2.10",
     "react-router-dom": "^6.19.0",
-    "reactstrap": "^9.2.1"
+    "reactstrap": "^9.2.1",
+    "tough-cookie": "^4.1.3"
   },
   "devDependencies": {
     "@types/leaflet": "^1.9.8",
     "@types/react": "^18.2.37",
     "@types/react-dom": "^18.2.15",
+    "@types/timelinejs3": "^3.4.7",
     "@typescript-eslint/eslint-plugin": "^6.10.0",
     "@typescript-eslint/parser": "^6.10.0",
     "@vitejs/plugin-react": "^4.2.0",

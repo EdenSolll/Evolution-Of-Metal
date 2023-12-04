@@ -6,17 +6,21 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Leaflet Map</title>
 
-    <!-- Include Leaflet CSS -->
     <link rel="stylesheet" href="https://unpkg.com/leaflet/dist/leaflet.css" />
+
+    <link rel="stylesheet" href="https://cdn.knightlab.com/libs/timeline3/latest/css/timeline.css" />
+    <script src="https://cdn.knightlab.com/libs/timeline3/latest/js/timeline.js"></script>
+
+    <link rel="stylesheet" href="./node_modules/LeafletSlider/dist/leaflet-slider-custom.css" />
 </head>
 <body>
-    <!-- Map container -->
-    <div id="map" style="height: 1250px;"></div>
+    <div id="map" style="height: calc(100vh - 60px);"></div>
 
-    <!-- Include Leaflet JavaScript -->
     <script src="https://unpkg.com/leaflet/dist/leaflet.js"></script>
 
-    <!-- Include your map.tsx file -->
     <script type="module" src="./src/components/map.tsx"></script>
+
+    <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.0/css/bootstrap.min.css" integrity="sha384-TMk5x5lq4w8gDlKl/IK5TgZotj5kEjUjC9q+COx0qO5H1sEk2VxW6IEUH8E29lF" crossorigin="anonymous">
+
 </body>
 </html>

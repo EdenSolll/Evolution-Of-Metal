@@ -1,21 +1,19 @@
-// PageContainer component
-import React from "react";
-import { Container } from "reactstrap";
-import NavBar from "../components/NavBar";
+import React, { useEffect } from 'react';
+import { Navbar } from 'reactstrap';
+import AudioPlayer from './AudioPlayer';
 
-type Props = {
-  children: React.ReactNode;
-};
+const NavBar: React.FC = () => {
+  useEffect(() => {
+    console.log('NavBar mounted');
+  }, []);
 
-export const PageContainer: React.FC<Props> = ({ children }) => {
   return (
-    <div style={{ paddingBottom: '90px', minHeight: '100vh' }}>
-      <Container className="main">
-        {children}
-      </Container>
-      <NavBar />
+    <div style={{ width: '100%', height: 60, backgroundColor: '#242424' }}>
+      <Navbar color="light" light expand="md">
+        <AudioPlayer />
+      </Navbar>
     </div>
   );
-};
+}
 
-export default PageContainer;
+export default NavBar;

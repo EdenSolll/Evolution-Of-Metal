@@ -4,20 +4,35 @@ import Home from './pages/Home';
 import PageContainer from './containers/PageContainer';
 import NotFound from './pages/NotFound';
 
-type Props = {
-  rerouteHomeOn404?: boolean
-}
-
-const App: React.FC<Props> = ({ rerouteHomeOn404 = null }) => {
+const App: React.FC = () => {
   return (
     <Router>
-      <PageContainer>
-        <Routes>
-          <Route path="/" element={<Home />} />
-          <Route path='/home' element={<Home />} />
-          <Route path='*' element={rerouteHomeOn404 ?? true ? <Home /> : <NotFound />} />
-        </Routes>
-      </PageContainer>
+      <Routes>
+        <Route
+          path="/"
+          element={() => (
+            <PageContainer>
+              <Home />
+            </PageContainer>
+          )}
+        />
+        <Route
+          path="/home"
+          element={() => (
+            <PageContainer>
+              <Home />
+            </PageContainer>
+          )}
+        />
+        <Route
+          path="*"
+          element={() => (
+            <PageContainer>
+              <NotFound />
+            </PageContainer>
+          )}
+        />
+      </Routes>
     </Router>
   );
 };
