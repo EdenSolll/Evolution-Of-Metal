@@ -4,24 +4,19 @@
     <meta charset="UTF-8">
     <link rel="icon" type="image/svg+xml" href="/vite.svg" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Vite + React + TS</title>
+    <title>Leaflet Map</title>
 
     <!-- Include Leaflet CSS -->
     <link rel="stylesheet" href="https://unpkg.com/leaflet/dist/leaflet.css" />
 </head>
 <body>
-    <div id="root"></div>
+    <!-- Map container -->
+    <div id="map" style="height: 1250px;"></div>
 
     <!-- Include Leaflet JavaScript -->
     <script src="https://unpkg.com/leaflet/dist/leaflet.js"></script>
 
-    <!-- Include your main.tsx file -->
-    <script type="module" src="./src/main.tsx"></script>
-
-    <!-- Map container -->
-    <div id="map" style="height: 400px;"></div>
-
-    <!-- Include your map.js file -->
+    <!-- Include your map.tsx file -->
     <script type="module" src="./src/components/map.tsx"></script>
 </body>
 </html>

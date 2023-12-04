@@ -1,4 +1,4 @@
-export const genres = [
+const Genres = [
   {
   genre: "Black Metal",
   year: 1984,
@@ -6,5 +6,6 @@ export const genres = [
   children:[],
   y_axis: 60,
   transition_genre: [],
-  },
+    },
 ];
+export default Genres;

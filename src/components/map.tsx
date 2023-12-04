@@ -1,16 +1,33 @@
 import 'leaflet/dist/leaflet.css';
 import L from 'leaflet';
+import Genres from '../data/genres.tsx';
 
-// Your existing React/TS code here...
+// Ensure that the map container element with ID 'map' exists in your HTML
+const mapContainer = document.getElementById('map');
 
-// Create a Leaflet map
-const map = L.map('map').setView([51.505, -0.09], 13);
+// Check if the map container element exists before proceeding
+if (mapContainer) {
+  const map = L.map(mapContainer, {
+    crs: L.CRS.Simple,
+    minZoom: -5
+  });
 
-// Add a tile layer (you can use different map providers)
-L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
-    attribution: '© OpenStreetMap contributors'
-}).addTo(map);
+  var bounds = [[-20, -20], [1020, 1020]];
+  var image = L.imageOverlay('https://external-content.duckduckgo.com/iu/?u=https%3A%2F%2Fwallpapercave.com%2Fwp%2Fwp3350716.jpg&f=1&nofb=1&ipt=aa915bbb5c24a16909de0a208eac83cf70e4104c27bb8250f43ed296a2089b97&ipo=images', bounds).addTo(map);
 
-// Add a marker
-L.marker([51.505, -0.09]).addTo(map)
-    .bindPopup('A sample marker!');
+  // Generate polyline coordinates based on Genres array
+  Genres.forEach((genre) => {
+    const polylineCoordinates = [
+      [genre.y_axis, 1020],
+      [genre.y_axis, genre.year / 10],
+    ];
+    console.log(polylineCoordinates);
+    (polylineCoordinates)
+
+    L.polyline(polylineCoordinates, { color: 'red' }).addTo(map);
+  });
+
+  map.setView([500, 500], 0);
+} else {
+  console.error('Map container not found. Make sure the element with ID "map" exists in your HTML.');
+}

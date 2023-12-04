@@ -9,7 +9,7 @@ type Props = {
 
 export const PageContainer: React.FC<Props> = ({ children }) => {
   return (
-    <div style={{ paddingBottom: '70px', minHeight: '100vh' }}>
+    <div style={{ paddingBottom: '90px', minHeight: '100vh' }}>
       <Container className="main">
         {children}
       </Container>
