@@ -1,26 +1,10 @@
-import React from 'react';
-import ReactDOM from 'react-dom/client';
-import AudioPlayer from './components/AudioPlayer';
-
-import './styles/index.css';
-import './styles/customize-progress-bar.css';
-
-const root = ReactDOM.createRoot(document.getElementById('root'));
-root.render(
-  <React.StrictMode>
-    <AudioPlayer />
-  </React.StrictMode>
-);
-
 :root {
   font-family: Inter, system-ui, Avenir, Helvetica, Arial, sans-serif;
   line-height: 1.5;
   font-weight: 400;
-
   color-scheme: light dark;
   color: rgba(255, 255, 255, 0.87);
   background-color: #242424;
-
   font-synthesis: none;
   text-rendering: optimizeLegibility;
   -webkit-font-smoothing: antialiased;
@@ -81,19 +65,18 @@ button:focus-visible {
 }
 
 #showyear {
-	font-weight:bold;
-	font-size:75px;
-	font-family: 'Helvetica', sans-serif;
-	float:left;
-	position:absolute;
-	top:-20px;
-	right:65%;
-	z-index:99999;
-	opacity:0.3;
+  font-weight: bold;
+  font-size: 75px;
+  font-family: 'Helvetica', sans-serif;
+  float: left;
+  position: absolute;
+  top: -20px;
+  right: 65%;
+  z-index: 99999;
+  opacity: 0.3;
 }
 
-<link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css"
-     integrity="sha256-p4NxAoJBhIIN+hmNHrzRCf9tD/miZyoHS5obTRR9BMY="
-     crossorigin=""/>
 
-#map { height: 180px; }
+#map {
+  height: 100vh; /* or adjust to your desired height */
+}

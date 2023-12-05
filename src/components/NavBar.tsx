@@ -5,11 +5,9 @@ import AudioPlayer from './AudioPlayer';
 const NavBar: React.FC = () => {
   console.log('NavBar rendered');
   return (
-    <div style={{ width: '100%', height: 60, backgroundColor: '#242424' }}>
-      <Navbar color="light" light expand="md">
-        <AudioPlayer />
-      </Navbar>
-    </div>
+    <Navbar color="light" light expand="md" style={{ position: 'fixed', bottom: 0, width: '100%', backgroundColor: '#242424' }}>
+      <AudioPlayer />
+    </Navbar>
   );
 }
 

@@ -1,19 +1,20 @@
-import React, { useEffect } from 'react';
-import { Navbar } from 'reactstrap';
-import AudioPlayer from './AudioPlayer';
+import React from "react";
+import { Container } from "reactstrap";
+import NavBar from "../components/NavBar";
 
-const NavBar: React.FC = () => {
-  useEffect(() => {
-    console.log('NavBar mounted');
-  }, []);
+type Props = {
+  children: React.ReactNode;
+};
 
+export const PageContainer: React.FC<Props> = ({ children }) => {
   return (
-    <div style={{ width: '100%', height: 60, backgroundColor: '#242424' }}>
-      <Navbar color="light" light expand="md">
-        <AudioPlayer />
-      </Navbar>
+    <div>
+      <Container className="main" fluid>
+        <NavBar />
+        <Container>{children}</Container>
+      </Container>
     </div>
   );
-}
+};
 
-export default NavBar;
+export default PageContainer;
