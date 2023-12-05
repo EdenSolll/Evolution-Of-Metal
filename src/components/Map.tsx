@@ -1,57 +1,28 @@
-import 'leaflet/dist/leaflet.css';
-import React, { Component } from 'react';
-import L from 'leaflet';
-import Genres from '../data/genres.tsx';
+import { Component, createRef } from "react";
+import L, { LatLngBoundsExpression, LatLngTuple } from "leaflet";
+import Genres from "../data/genres.tsx";
 
 class LeafletMap extends Component {
-  constructor(props) {
-    super(props);
-    this.mapContainerRef = React.createRef();
-    this.map = null;
-  }
-
+  mapContainerRef = createRef<HTMLDivElement>(); // Create a ref for the map container
   componentDidMount() {
-    // Get the map container using the ref
-    const mapContainer = this.mapContainerRef.current;
-
-    // Create Leaflet map
-    this.map = L.map(mapContainer, {
-      crs: L.CRS.Simple,
-      minZoom: -5,
-    });
-
-    // Set initial view
-    this.map.setView([500, 500], 0);
-
-    // Set map container size
-    mapContainer.style.width = '100vw';
-    mapContainer.style.height = 'calc(100vh - 5eu)';
-
-    // Define image bounds and add image overlay
-    const bounds = [[-20, -20], [1020, 1020]];
-    const image = L.imageOverlay('../assets/1092392.jpg', bounds).addTo(this.map);
-
-    // Generate and add polylines based on Genres array
-    Genres.forEach((genre) => {
-      const polylineCoordinates = [
-        [genre.y_axis, 1020],
-        [genre.y_axis, genre.year / 10],
+    const mapContainer = this.mapContainerRef.current; // Get the map container using the ref
+    if (mapContainer) {
+      const bounds: LatLngBoundsExpression = [
+        [-20, -20] as LatLngTuple,
+        [1020, 1020] as LatLngTuple,
       ];
-
-      L.polyline(polylineCoordinates, { color: 'red' }).addTo(this.map);
-    });
-  }
-
-  componentWillUnmount() {
-    // Clean up and remove the map instance when the component is unmounted
-    if (this.map) {
-      this.map.remove();
+      const map = L.map(mapContainer).fitBounds(bounds); // Create the map and fit it to the bounds
+      L.imageOverlay("../assets/1092392.jpg", bounds).addTo(map); // Add the image overlay to the map
+      Genres.forEach((genre) => {
+        const polylineCoordinates: LatLngTuple[] = [
+          [genre.y_axis, 1020] as LatLngTuple,
+          [genre.y_axis, genre.year / 10] as LatLngTuple];
+        L.polyline(polylineCoordinates, { color: "red" }).addTo(map);
+      });
     }
   }
-
   render() {
-    return <div id="map-container" ref={this.mapContainerRef}></div>;
+    return <div ref={this.mapContainerRef} style={{ height: "500px" }}></div>;
   }
 }
-
 export default LeafletMap;
