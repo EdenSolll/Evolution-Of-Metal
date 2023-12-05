@@ -1,11 +1,10 @@
 // Import necessary dependencies and components
-import React, { useEffect } from 'react';
-import NavBar from '../components/NavBar';
+import LeafletMap from "../components/map.tsx";
 
 const App: React.FC = () => {
   return (
     <div>
-      <NavBar />
+        <LeafletMap/>
     </div>
   );
 };
