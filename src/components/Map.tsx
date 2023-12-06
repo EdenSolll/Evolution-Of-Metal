@@ -1,28 +1,34 @@
-import { Component, createRef } from "react";
-import L, { LatLngBoundsExpression, LatLngTuple } from "leaflet";
-import Genres from "../data/genres.tsx";
+import { useEffect } from 'react';
+import L, { LatLngBoundsExpression, LatLngTuple } from 'leaflet';
+import Genres from '../data/genres.tsx';
 
-class LeafletMap extends Component {
-  mapContainerRef = createRef<HTMLDivElement>(); // Create a ref for the map container
-  componentDidMount() {
-    const mapContainer = this.mapContainerRef.current; // Get the map container using the ref
-    if (mapContainer) {
-      const bounds: LatLngBoundsExpression = [
-        [-20, -20] as LatLngTuple,
-        [1020, 1020] as LatLngTuple,
-      ];
-      const map = L.map(mapContainer).fitBounds(bounds); // Create the map and fit it to the bounds
-      L.imageOverlay("../assets/1092392.jpg", bounds).addTo(map); // Add the image overlay to the map
-      Genres.forEach((genre) => {
-        const polylineCoordinates: LatLngTuple[] = [
-          [genre.y_axis, 1020] as LatLngTuple,
-          [genre.y_axis, genre.year / 10] as LatLngTuple];
-        L.polyline(polylineCoordinates, { color: "red" }).addTo(map);
-      });
+export default function Map() {
+  useEffect(() => {
+    const mapContainer = L.DomUtil.get('map');
+
+    if (mapContainer != null) {
+      mapContainer._leaflet_id = null;
     }
-  }
-  render() {
-    return <div ref={this.mapContainerRef} style={{ height: "500px" }}></div>;
-  }
+
+    const map = L.map('map', {
+      crs: L.CRS.Simple,
+      minZoom: -5,
+    });
+
+    var imageUrl = 'https://www.metal-archives.com/images/6/6/6/6/666668.jpg?0304',
+    bounds = [[-20, -20], [1020, 1020]];
+
+    L.imageOverlay(imageUrl, bounds).addTo(map);
+
+    map.setView([500, 500], 0);
+
+    Genres.forEach((genre) => {
+      const polylineCoordinates: LatLngTuple[] = [
+        [genre.y_axis, 1020],
+        [genre.y_axis, genre.year / 10],
+      ];
+      L.polyline(polylineCoordinates, { color: 'red' }).addTo(map);
+    });
+  }, []);
+  return <div id="map" style={{ height: '100vh' }}></div>;
 }
-export default LeafletMap;
