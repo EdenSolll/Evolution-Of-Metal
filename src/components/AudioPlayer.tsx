@@ -45,11 +45,6 @@ const AudioPlayer = () => {
                   setTimeProgress={setTimeProgress}
                   handleNext={handleNext}
                 />
-                // tracks,
-                // trackIndex,
-                // setTrackIndex,
-                // setCurrentTrack,
-                // handleNext,
             <ProgressBar
               {...{ progressBarRef, audioRef, timeProgress, duration }}
               />
