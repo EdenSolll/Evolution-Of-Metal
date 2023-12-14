@@ -4,7 +4,7 @@ const Genres = [
   year: 1985,
   parents:[],
   children:[],
-  y_axis: 1800,
+  y_axis: 215,
   transition_genre: [],
   },
   {
@@ -12,7 +12,7 @@ const Genres = [
   year: 1995,
   parents: ["Alternative Metal"],
   children: ["Nu Metal"],
-  y_axis: 1850,
+  y_axis: 50,
   transition_genre: ["Alternative Metal"],
   },
   {
@@ -20,7 +20,7 @@ const Genres = [
   year: 1993,
   parents: ["Funk Metal"],
   children: [],
-  y_axis: 1885,
+  y_axis: 200,
   transition_genre: ["Funk Metal"],
   },
   {
@@ -28,7 +28,7 @@ const Genres = [
   year: 1987,
   parents: ["Funk Metal"],
   children: [],
-  y_axis: 1885,
+  y_axis: 150,
   transition_genre: ["Funk Metal"],
   },
   {
@@ -36,7 +36,7 @@ const Genres = [
   year: 1984,
   parents:["Alternative Metal"],
   children:[],
-  y_axis: 1825,
+  y_axis: 100,
   transition_genre: ["Alternative Metal"],
   },
 ];

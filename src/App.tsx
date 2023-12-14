@@ -1,16 +1,19 @@
 import React from 'react';
 import { BrowserRouter as Router, Route, Routes } from 'react-router-dom';
-import PageContainer from './containers/PageContainer';
-import LeafletMap from './components/Map'; // Import your LeafletMap component
+import LeafletMap from './components/Map';
+import NavBar from './components/NavBar';
 
 const App: React.FC = () => {
-  return (
-    <Router>
-      <Routes>
-        <Route path="/" element={<PageContainer><LeafletMap /></PageContainer>} />
-      </Routes>
-    </Router>
-  );
+ return (
+   <Router>
+     <Routes>
+       <Route path="/" element={<>
+         <NavBar />
+         <LeafletMap />
+       </>} />
+     </Routes>
+   </Router>
+ );
 }
 
 export default App;
