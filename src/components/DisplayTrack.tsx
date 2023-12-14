@@ -1,14 +1,32 @@
-const DisplayTrack = ({
-  currentTrack,
-  audioRef,
-  setDuration,
-  progressBarRef,
-  handleNext,
+import React, { RefObject } from 'react';
+
+interface DisplayTrackProps {
+ currentTrack: {
+   src: string;
+   title: string;
+   author: string;
+ };
+ audioRef: RefObject<HTMLAudioElement>;
+ setDuration: (seconds: number) => void;
+ progressBarRef: RefObject<HTMLInputElement>;
+ handleNext: () => void;
+}
+
+const DisplayTrack: React.FC<DisplayTrackProps> = ({
+ currentTrack,
+ audioRef,
+ setDuration,
+ progressBarRef,
+ handleNext,
 }) => {
   const onLoadedMetadata = () => {
-    const seconds = audioRef.current.duration;
+   const seconds = audioRef.current?.duration;
+   if (seconds !== undefined) {
     setDuration(seconds);
-    progressBarRef.current.max = seconds;
+    if (progressBarRef.current) {
+      progressBarRef.current.max = seconds.toString();
+    }
+   }
   };
 
   return (
