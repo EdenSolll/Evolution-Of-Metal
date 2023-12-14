@@ -13,8 +13,8 @@ const AudioPlayer = () => {
   const [timeProgress, setTimeProgress] = useState(0);
   const [duration, setDuration] = useState(0);
 
-  const audioRef = useRef();
-  const progressBarRef = useRef();
+  const audioRef = useRef<HTMLAudioElement>(null) as React.MutableRefObject<HTMLAudioElement>;
+  const progressBarRef = useRef<HTMLInputElement>(null) as React.MutableRefObject<HTMLInputElement>;
 
   const handleNext = () => {
     if (trackIndex >= tracks.length - 1) {
@@ -38,19 +38,18 @@ const AudioPlayer = () => {
       >
         <div className="audio player" style={{ display: 'flex', gap: '10px' }}>
           <div className="inner" style={{ display: 'flex', flexDirection: 'row', alignItems: 'left', gap: '10px' }}>
-            <Controls
-              {...{
-                audioRef,
-                progressBarRef,
-                duration,
-                setTimeProgress,
-                tracks,
-                trackIndex,
-                setTrackIndex,
-                setCurrentTrack,
-                handleNext,
-              }}
-            />
+                <Controls
+                  audioRef={audioRef as React.MutableRefObject<HTMLAudioElement>}
+                  progressBarRef={progressBarRef}
+                  duration={duration}
+                  setTimeProgress={setTimeProgress}
+                  handleNext={handleNext}
+                />
+                // tracks,
+                // trackIndex,
+                // setTrackIndex,
+                // setCurrentTrack,
+                // handleNext,
             <ProgressBar
               {...{ progressBarRef, audioRef, timeProgress, duration }}
               />
