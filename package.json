@@ -10,14 +10,12 @@
     "preview": "vite preview"
   },
   "dependencies": {
-    "@react-buddy/ide-toolbox": "^2.4.0",
     "all": "^0.0.0",
-    "hawk": "^9.0.1",
-    "hls.js": "^1.4.12",
     "http": "^0.0.1-security",
     "konva": "^9.2.3",
     "leaflet": "^1.9.4",
-    "LeafletSlider": "github:dwilhelm89/LeafletSlider",
+    "leaflet-auto-graticule": "^1.1.2",
+    "leaflet-textpath": "^1.2.3",
     "mediaelement": "^7.0.2",
     "react": "^18.2.0",
     "react-dom": "^18.2.0",
