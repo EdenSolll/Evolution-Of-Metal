@@ -4,9 +4,9 @@ import 'leaflet/dist/leaflet.css';
 import Genres from '../data/genres.tsx';
 
 export default function Map() {
- const lineLayer = useRef(null);
- const imageOverlay = useRef(null);
- const mapContainer = useRef(null);
+ const lineLayer = useRef<L.LayerGroup<any> | null>(null);
+ const imageOverlay = useRef<L.ImageOverlay | null>(null);
+ const mapContainer = useRef<L.Map | null>(null);
 
  useEffect(() => {
  if (mapContainer.current) {
@@ -22,14 +22,16 @@ export default function Map() {
  attributionControl: false
  }).setView([200, -75], 0);
 
- var imageUrl = 'https://www.metal-archives.com/images/6/6/6/6/666668.jpg?0304',
- bounds = [[-20, -20], [520, 520]];
+ const imageUrl = 'https://www.metal-archives.com/images/6/6/6/6/666668.jpg?0304'
+ const bounds = [[-20, -20], [520, 520]] as L.LatLngBoundsExpression;
+
 
  if (imageOverlay.current) {
  map.removeLayer(imageOverlay.current);
  }
 
  imageOverlay.current = L.imageOverlay(imageUrl, bounds).addTo(map);
+
 
  lineLayer.current = L.layerGroup().addTo(map);
 
