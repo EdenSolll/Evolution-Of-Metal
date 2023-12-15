@@ -38,16 +38,16 @@ const AudioPlayer = () => {
       >
         <div className="audio player" style={{ display: 'flex', gap: '10px' }}>
           <div className="inner" style={{ display: 'flex', flexDirection: 'row', alignItems: 'left', gap: '10px' }}>
-                <Controls
-                  audioRef={audioRef as React.MutableRefObject<HTMLAudioElement>}
-                  progressBarRef={progressBarRef}
-                  duration={duration}
-                  setTimeProgress={setTimeProgress}
-                  handleNext={handleNext}
-                />
+            <Controls
+              audioRef={audioRef as React.MutableRefObject<HTMLAudioElement>}
+              progressBarRef={progressBarRef}
+              duration={duration}
+              setTimeProgress={setTimeProgress}
+              handleNext={handleNext}
+            />
             <ProgressBar
               {...{ progressBarRef, audioRef, timeProgress, duration }}
-              />
+            />
             <DisplayTrack
               {...{
                 currentTrack,
