@@ -33,8 +33,6 @@ useEffect(() => {
 
  lineLayer.current = L.layerGroup().addTo(map);
 
- const labelLayer = L.layerGroup().addTo(map);
-
  Genres.forEach((genre) => {
  const polylineCoordinates: LatLngTuple[] = [
    [genre.y_axis, 540],
@@ -51,25 +49,19 @@ useEffect(() => {
  }).addTo(map);
  });
 
- const yearLayers = {};
- for (let year = 1970; year <= 2024; year++) {
- const marker = L.marker([0, ((year-1970)*10)], { icon: L.divIcon({ className: 'leaflet-marker-icon' }) }).bindTooltip(year.toString(), { permanent: year % 10 === 0, direction: 'bottom' });
- if (!map.hasLayer(marker)) {
-  marker.addTo(map);
- }
+const yearLayers = {};
+for (let year = 1970; year <= 2024; year++) {
+ const marker = L.marker([0, ((year-1970)*10)], {
+ icon: L.divIcon({
+  className: 'leaflet-marker-icon',
+  html: `<div>${year}</div>`, // Add the year as the HTML for the marker
+  iconSize: [200, 40],
+  iconAnchor: [0, 0]
+ })
+ });
  yearLayers[year] = marker;
- }
- const seen = [];
- const replacer = (key, value) => {
- if (value != null && typeof value === 'object') {
-  if (seen.indexOf(value) >= 0) {
-    return;
-  }
-  seen.push(value);
- }
- return value;
-};
-console.log(JSON.stringify(yearLayers, replacer));
+}
+
 
 map.on('zoomend', () => {
  const zoom = map.getZoom();
@@ -78,6 +70,7 @@ map.on('zoomend', () => {
  if (zoom >= 2) {
  console.log('Adding year marker for year:', year);
  yearLayers[year].addTo(map);
+ yearLayers[year].openTooltip(); // Open the tooltip permanently
  } else {
  if (year % 10 != 0){
  console.log('Removing year marker for year:', year);
