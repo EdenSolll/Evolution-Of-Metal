@@ -40,23 +40,18 @@ export default function MapComponent(): JSX.Element {
 
 Genres.forEach((genre: Genre) => {
  const polylineCoordinates: L.LatLngTuple[] = [
- [genre.y_axis, 540],
- [genre.y_axis, ((genre.year - 1970) * 10)],
+   [genre.y_axis, 540],
+   [genre.y_axis, ((genre.year - 1970) * 10)],
  ];
 
- L.polyline(polylineCoordinates, { color: 'maroon' }).addTo(map);
-
- L.polyline(polylineCoordinates, {
- color: 'red',
- dashArray: '75,5'
- }).addTo(map);
+ L.polyline(polylineCoordinates, { color: 'red' }).addTo(map);
 
  L.marker([genre.y_axis, ((genre.year - 1970) * 20)], {
- icon: L.divIcon({
-   className: 'leaflet-marker-icon',
-   html: `<div>${genre.genre}</div>`,
-   iconSize: [200, 40]
- })
+   icon: L.divIcon({
+     className: 'leaflet-marker-icon',
+     html: `<div>${genre.genre}</div>`,
+     iconSize: [200, 40]
+   })
  }).addTo(map);
 });
 
@@ -67,7 +62,7 @@ for (let year = 1970; year <= 2024; year++) {
      className: 'leaflet-marker-icon',
      html: `<div class="year">${year}</div>`,
      iconSize: [200, 40],
-     iconAnchor: [15, 0]
+     iconAnchor: [10, 0] // Shift the icon 5 pixels to the left
    })
  }).addTo(map);
 
