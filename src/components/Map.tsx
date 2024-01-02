@@ -52,30 +52,25 @@ export default function MapComponent(): JSX.Element {
                 })
 
                 Genres.forEach((genre: Genre) => {
-                    const xCoordinateStart =
-                        (genre.year - MIN_YEAR) * (MAP_WIDTH / (MAX_YEAR - MIN_YEAR))
-                    const xCoordinateEnd =
-                        (MAX_YEAR - MIN_YEAR) * (MAP_WIDTH / (MAX_YEAR - MIN_YEAR))
-                    const polylineCoordinates: L.LatLngTuple[] = [
-                        [genre.y_axis, xCoordinateStart],
-                        [genre.y_axis, xCoordinateEnd],
-                    ]
+                    const xCoordinateStart = (genre.year - MIN_YEAR) * (MAP_WIDTH / (MAX_YEAR - MIN_YEAR))
+                    const xCoordinateEnd = (MAX_YEAR - MIN_YEAR) * (MAP_WIDTH / (MAX_YEAR - MIN_YEAR))
+                    const polylineCoordinates: L.LatLngTuple[] = [ [genre.y_axis, xCoordinateStart], [genre.y_axis, xCoordinateEnd], ]
 
-                    const foregroundLine = L.polyline(polylineCoordinates, {
+                    const yearline = L.polyline(polylineCoordinates, {
                         color: 'red',
                         weight: 6,
                         dashArray: '75,10',
                     }).addTo(map)
 
-                    foregroundLine.on('click', function (e) {
+                    yearline.on('click', function (e) {
                         alert(`Genre ${genre.genre} clicked!`)
                     })
 
-                    foregroundLine
+                    yearline
                         .bindTooltip(genre.genre, {
                             permanent: true,
                             sticky: false,
-                            offset: [0, -10], // Offset the tooltip above the line
+                            offset: [0, -10],
                         })
                         .addTo(map)
                 })
