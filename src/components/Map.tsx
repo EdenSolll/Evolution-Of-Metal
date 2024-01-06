@@ -1,14 +1,22 @@
-import { useEffect, useRef } from 'react'
+import { useEffect, useMemo, useRef } from 'react'
 import L, { ImageOverlay, Map } from 'leaflet'
+import Genres from '../data/genres'
 import 'leaflet/dist/leaflet.css'
-import Genres from '../data/genres.tsx'
 import './map.css'
 
-interface Genre {
+interface Song {
     id: string
-    y_axis: number
     year: number
+    title: string
+}
+
+interface Genre {
     genre: string
+    startedYear: number
+    parentGenres: string[]
+    childGenres: string[]
+    yAxis: number
+    songs: Song[]
 }
 
 const MAP_WIDTH = 540
@@ -20,6 +28,40 @@ export default function MapComponent(): JSX.Element {
     const imageOverlay = useRef<ImageOverlay | null>(null)
     const mapContainer = useRef<Map | null>(null)
 
+    const drawLines = useMemo(() => {
+        return (map: Map) => {
+            map.eachLayer((layer) => {
+                if (layer instanceof L.Polyline) {
+                    map.removeLayer(layer)
+                }
+            })
+
+            Genres.forEach((genre: Genre) => {
+                genre.songs.forEach((song: Song) => {
+                    const xCoordinateStart =
+                        (song.year - MIN_YEAR) *
+                        (MAP_WIDTH / (MAX_YEAR - MIN_YEAR))
+                    const xCoordinateEnd =
+                        (song.year - MIN_YEAR) *
+                        (MAP_WIDTH / (MAX_YEAR - MIN_YEAR))
+                    const polylineCoordinates: L.LatLngTuple[] = [
+                        [genre.yAxis, xCoordinateStart],
+                        [genre.yAxis, xCoordinateEnd],
+                    ]
+
+                    const songline = L.polyline(polylineCoordinates, {
+                        color: 'blue',
+                        weight: 6,
+                        dashArray: '75,10',
+                    }).addTo(map)
+
+                    songline.on('click', function () {
+                        alert(`Song ${song.title} clicked!`)
+                    })
+                })
+            })
+        }
+    }, [Genres])
     useEffect(() => {
         try {
             const map = L.map('map', {
@@ -44,42 +86,7 @@ export default function MapComponent(): JSX.Element {
 
             imageOverlay.current = L.imageOverlay(imageUrl, bounds).addTo(map)
 
-            const drawLines = () => {
-                map.eachLayer((layer) => {
-                    if (layer instanceof L.Polyline) {
-                        map.removeLayer(layer)
-                    }
-                })
-
-                Genres.forEach((genre: Genre) => {
-                    const xCoordinateStart = (genre.year - MIN_YEAR) * (MAP_WIDTH / (MAX_YEAR - MIN_YEAR))
-                    const xCoordinateEnd = (MAX_YEAR - MIN_YEAR) * (MAP_WIDTH / (MAX_YEAR - MIN_YEAR))
-                    const polylineCoordinates: L.LatLngTuple[] = [ [genre.y_axis, xCoordinateStart], [genre.y_axis, xCoordinateEnd], ]
-
-                    const yearline = L.polyline(polylineCoordinates, {
-                        color: 'red',
-                        weight: 6,
-                        dashArray: '75,10',
-                    }).addTo(map)
-
-                    yearline.on('click', function (e) {
-                        alert(`Genre ${genre.genre} clicked!`)
-                    })
-
-                    yearline
-                        .bindTooltip(genre.genre, {
-                            permanent: true,
-                            sticky: false,
-                            offset: [0, -10],
-                        })
-                        .addTo(map)
-                })
-            }
-            drawLines()
-
-            map.on('zoomend', () => {
-                drawLines()
-            })
+            drawLines(map)
 
             const yearLayers: Record<number, L.Marker> = {}
             for (let year = MIN_YEAR; year <= MAX_YEAR; year++) {
@@ -117,7 +124,10 @@ export default function MapComponent(): JSX.Element {
             map.fire('zoomend')
             mapContainer.current = map
         } catch (error) {
-            console.error('Failed to initialize map: ', error)
+            console.error(
+                'There has been a problem with your fetch operation:',
+                error
+            )
         }
     }, [])
 
