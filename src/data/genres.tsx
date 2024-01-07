@@ -46,7 +46,6 @@ const Genres = [
   {"id": "39", "year": 2021, "title": "Song 39"},
   {"id": "40", "year": 2022, "title": "Song 40"},
   {"id": "41", "year": 2023, "title": "Song 41"},
-  {"id": "42", "year": 2024, "title": "Song 42"},
  ]
 },
 ];

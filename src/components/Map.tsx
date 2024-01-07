@@ -37,6 +37,34 @@ export default function MapComponent(): JSX.Element {
             })
 
             Genres.forEach((genre: Genre) => {
+              const genreCoordinateStart =
+                    (genre.startedYear - MIN_YEAR) *
+                    (MAP_WIDTH / (MAX_YEAR - MIN_YEAR))
+                const genreCoordinateEnd =
+                    (MAX_YEAR - MIN_YEAR) * (MAP_WIDTH / (MAX_YEAR - MIN_YEAR))
+                const baseLineCoordinates: L.LatLngTuple[] = [
+                    [genre.yAxis, genreCoordinateStart],
+                    [genre.yAxis, genreCoordinateEnd],
+                ]
+                L.polyline(baseLineCoordinates, {
+                    color: 'blue',
+                    weight: 5,
+                    opacity: 0.5,
+                }).addTo(map)
+
+                  const tooltip = L.tooltip({
+                   permanent: true,
+                   direction: 'top',
+                   sticky: true,
+                  }).setContent(genre.genre);
+
+                  const baseLine = L.polyline(baseLineCoordinates, {
+                   color: 'blue',
+                   weight: 5,
+                   opacity: 0.5,
+                  }).addTo(map);
+
+                  baseLine.bindTooltip(tooltip);
                 genre.songs.forEach((song: Song) => {
                     const xCoordinateStart =
                         (song.year - MIN_YEAR) *
@@ -46,13 +74,12 @@ export default function MapComponent(): JSX.Element {
                         (MAP_WIDTH / (MAX_YEAR - MIN_YEAR))
                     const polylineCoordinates: L.LatLngTuple[] = [
                         [genre.yAxis, xCoordinateStart],
-                        [genre.yAxis, xCoordinateEnd],
+                        [genre.yAxis, xCoordinateEnd + 9],
                     ]
 
                     const songline = L.polyline(polylineCoordinates, {
                         color: 'blue',
                         weight: 6,
-                        dashArray: '75,10',
                     }).addTo(map)
 
                     songline.on('click', function () {
