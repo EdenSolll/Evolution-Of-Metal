@@ -4,7 +4,7 @@ const Genres = [
   startedYear: 1984,
   parentGenres: ["Thrash Metal"],
   childGenres: ["Brutal"],
-  yAxis: 10,
+  yAxis: 100,
   songs: [
   {"id": "1", "year": 1984, "title": "Song 1"},
   {"id": "2", "year": 1985, "title": "Song 2"},

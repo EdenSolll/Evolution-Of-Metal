@@ -4,6 +4,7 @@ import Genres from '../data/genres'
 import 'leaflet/dist/leaflet.css'
 import './map.css'
 
+// Define interfaces
 interface Song {
     id: string
     year: number
@@ -19,16 +20,29 @@ interface Genre {
     songs: Song[]
 }
 
+// Define constants
 const MAP_WIDTH = 540
 const MAP_HEIGHT = 540
 const MAX_YEAR = 2024
 const MIN_YEAR = 1970
 
+// Helper function to calculate coordinates
+const calculateCoordinate = (
+    year: number,
+    minYear: number,
+    maxYear: number,
+    mapWidth: number
+): number => {
+    return (year - minYear) * (mapWidth / (maxYear - minYear))
+}
+
 export default function MapComponent(): JSX.Element {
+    // Use refs
     const imageOverlay = useRef<ImageOverlay | null>(null)
     const mapContainer = useRef<Map | null>(null)
 
-    const drawLines = useMemo(() => {
+    // Use memo to optimize performance
+    const drawGenreLines = useMemo(() => {
         return (map: Map) => {
             map.eachLayer((layer) => {
                 if (layer instanceof L.Polyline) {
@@ -37,116 +51,31 @@ export default function MapComponent(): JSX.Element {
             })
 
             Genres.forEach((genre: Genre) => {
-              const genreCoordinateStart =
-                    (genre.startedYear - MIN_YEAR) *
-                    (MAP_WIDTH / (MAX_YEAR - MIN_YEAR))
-                const genreCoordinateEnd =
-                    (MAX_YEAR - MIN_YEAR) * (MAP_WIDTH / (MAX_YEAR - MIN_YEAR))
-                const baseLineCoordinates: L.LatLngTuple[] = [
-                    [genre.yAxis, genreCoordinateStart],
-                    [genre.yAxis, genreCoordinateEnd],
-                ]
-                L.polyline(baseLineCoordinates, {
-                    color: 'blue',
-                    weight: 5,
-                    opacity: 0.5,
-                }).addTo(map)
+                // Draw genre lines
+                drawGenreLine(genre, map)
 
-                  const tooltip = L.tooltip({
-                   permanent: true,
-                   direction: 'top',
-                   sticky: true,
-                  }).setContent(genre.genre);
-
-                  const baseLine = L.polyline(baseLineCoordinates, {
-                   color: 'blue',
-                   weight: 5,
-                   opacity: 0.5,
-                  }).addTo(map);
-
-                  baseLine.bindTooltip(tooltip);
-                genre.songs.forEach((song: Song) => {
-                    const xCoordinateStart =
-                        (song.year - MIN_YEAR) *
-                        (MAP_WIDTH / (MAX_YEAR - MIN_YEAR))
-                    const xCoordinateEnd =
-                        (song.year - MIN_YEAR) *
-                        (MAP_WIDTH / (MAX_YEAR - MIN_YEAR))
-                    const polylineCoordinates: L.LatLngTuple[] = [
-                        [genre.yAxis, xCoordinateStart],
-                        [genre.yAxis, xCoordinateEnd + 9],
-                    ]
-
-                    const songline = L.polyline(polylineCoordinates, {
-                        color: 'blue',
-                        weight: 6,
-                    }).addTo(map)
-
-                    songline.on('click', function () {
-                        alert(`Song ${song.title} clicked!`)
-                    })
-                })
+                // Draw song lines
+                drawSongLines(genre, map)
             })
         }
     }, [Genres])
+
+    // Setup map and handle side effects
     useEffect(() => {
         try {
-            const map = L.map('map', {
-                crs: L.CRS.Simple,
-                minZoom: -2,
-                maxZoom: 3.5,
-                zoomSnap: 0.1,
-                zoomDelta: 0.1,
-                attributionControl: false,
-            }).setView([200, -75], 0)
-
-            const imageUrl =
-                'https://www.metal-archives.com/images/6/6/6/6/666668.jpg?0304'
-            const bounds: L.LatLngTuple[] = [
-                [0, 0],
-                [MAP_HEIGHT, MAP_WIDTH],
-            ]
+            const map = setupMap()
 
             if (imageOverlay.current) {
                 map.removeLayer(imageOverlay.current)
             }
 
-            imageOverlay.current = L.imageOverlay(imageUrl, bounds).addTo(map)
+            imageOverlay.current = addImageOverlay(map)
 
-            drawLines(map)
+            drawGenreLines(map)
 
-            const yearLayers: Record<number, L.Marker> = {}
-            for (let year = MIN_YEAR; year <= MAX_YEAR; year++) {
-                const yearMarker = L.marker([0, (year - MIN_YEAR) * 10], {
-                    icon: L.divIcon({
-                        className: 'leaflet-marker-icon',
-                        html: `<div class="year">${year}</div>`,
-                        iconSize: [200, 40],
-                        iconAnchor: [15, 0],
-                    }),
-                }).addTo(map)
+            const yearLayers = addYearMarkers(map)
 
-                yearLayers[year] = yearMarker
-            }
-
-            map.on('zoomend', () => {
-                const zoom = map.getZoom()
-                console.log('Zoom level:', zoom)
-
-                for (let yearStr in yearLayers) {
-                    const year = parseInt(yearStr)
-                    if (zoom >= 2) {
-                        console.log('Adding year marker for year:', year)
-                        yearLayers[year].addTo(map)
-                        yearLayers[year].openTooltip()
-                    } else {
-                        if (year % 10 !== 0) {
-                            console.log('Removing year marker for year:', year)
-                            yearLayers[year].removeFrom(map)
-                        }
-                    }
-                }
-            })
+            handleZoomEvents(map, yearLayers)
 
             map.fire('zoomend')
             mapContainer.current = map
@@ -170,4 +99,127 @@ export default function MapComponent(): JSX.Element {
             }}
         />
     )
+}
+
+function drawGenreLine(genre: Genre, map: Map) {
+    const genreCoordinateStart = calculateCoordinate(
+        genre.startedYear,
+        MIN_YEAR,
+        MAX_YEAR,
+        MAP_WIDTH
+    )
+    const genreCoordinateEnd = calculateCoordinate(
+        MAX_YEAR,
+        MIN_YEAR,
+        MAX_YEAR,
+        MAP_WIDTH
+    )
+    const baseLineCoordinates: L.LatLngTuple[] = [
+        [genre.yAxis, genreCoordinateStart],
+        [genre.yAxis, genreCoordinateEnd],
+    ]
+    const baseLine = L.polyline(baseLineCoordinates, {
+        color: 'blue',
+        weight: 5,
+        opacity: 0.5,
+    }).addTo(map)
+
+    const tooltip = L.tooltip({
+        permanent: true,
+        direction: 'top',
+        sticky: true,
+    }).setContent(genre.genre)
+
+    baseLine.bindTooltip(tooltip)
+}
+
+function drawSongLines(genre: Genre, map: Map) {
+    genre.songs.forEach((song: Song) => {
+        const xCoordinateStart = calculateCoordinate(
+            song.year,
+            MIN_YEAR,
+            MAX_YEAR,
+            MAP_WIDTH
+        )
+        const xCoordinateEnd = calculateCoordinate(
+            song.year,
+            MIN_YEAR,
+            MAX_YEAR,
+            MAP_WIDTH
+        )
+        const polylineCoordinates: L.LatLngTuple[] = [
+            [genre.yAxis, xCoordinateStart],
+            [genre.yAxis, xCoordinateEnd + 9],
+        ]
+
+        const songline = L.polyline(polylineCoordinates, {
+            color: 'blue',
+            weight: 6,
+        }).addTo(map)
+
+        songline.on('click', function () {
+            alert(`Song ${song.title} clicked!`)
+        })
+    })
+}
+
+function setupMap(): Map {
+    return L.map('map', {
+        crs: L.CRS.Simple,
+        minZoom: -2,
+        maxZoom: 3.5,
+        zoomSnap: 0.1,
+        zoomDelta: 0.1,
+        attributionControl: false,
+    }).setView([200, -75], 0)
+}
+
+function addImageOverlay(map: Map): ImageOverlay {
+    const imageUrl =
+        'https://www.metal-archives.com/images/6/6/6/6/666668.jpg?0304'
+    const bounds: L.LatLngTuple[] = [
+        [0, 0],
+        [MAP_HEIGHT, MAP_WIDTH],
+    ]
+
+    return L.imageOverlay(imageUrl, bounds).addTo(map)
+}
+
+function addYearMarkers(map: Map) {
+    const yearLayers: Record<number, L.Marker> = {}
+    for (let year = MIN_YEAR; year <= MAX_YEAR; year++) {
+        const yearMarker = L.marker([0, (year - MIN_YEAR) * 10], {
+            icon: L.divIcon({
+                className: 'leaflet-marker-icon',
+                html: `<div class="year">${year}</div>`,
+                iconSize: [200, 40],
+                iconAnchor: [15, 0],
+            }),
+        }).addTo(map)
+
+        yearLayers[year] = yearMarker
+    }
+
+    return yearLayers
+}
+
+function handleZoomEvents(map: Map, yearLayers: Record<number, L.Marker>) {
+    map.on('zoomend', () => {
+        const zoom = map.getZoom()
+        console.log('Zoom level:', zoom)
+
+        for (let yearStr in yearLayers) {
+            const year = parseInt(yearStr)
+            if (zoom >= 2) {
+                console.log('Adding year marker for year:', year)
+                yearLayers[year].addTo(map)
+                yearLayers[year].openTooltip()
+            } else {
+                if (year % 10 !== 0) {
+                    console.log('Removing year marker for year:', year)
+                    yearLayers[year].removeFrom(map)
+                }
+            }
+        }
+    })
 }
