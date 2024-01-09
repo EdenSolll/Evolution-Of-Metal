@@ -1,48 +1,60 @@
-import React, { RefObject } from 'react';
+import React, { useContext } from 'react'
+import { AudioContext } from './AudioPlayer'
 
 interface DisplayTrackProps {
-  currentTrack: {
-    src: string;
-    title: string;
-    author: string;
-  };
-  audioRef: RefObject<HTMLAudioElement>;
-  setDuration: (seconds: number) => void;
-  progressBarRef: RefObject<HTMLInputElement>;
-  handleNext: () => void;
+    currentTrack: {
+        id: string
+        year: number
+        title: string
+        src: string
+        artist: string
+    }
+    audioRef: React.RefObject<HTMLAudioElement>
+    setDuration: React.Dispatch<React.SetStateAction<number>>
+    progressBarRef: React.RefObject<HTMLInputElement>
 }
 
 const DisplayTrack: React.FC<DisplayTrackProps> = ({
-  currentTrack,
-  audioRef,
-  setDuration,
-  progressBarRef,
-  handleNext,
+    currentTrack,
+    audioRef,
+    setDuration,
+    progressBarRef,
 }) => {
-  const onLoadedMetadata = () => {
-    const seconds = audioRef.current?.duration;
-    if (seconds !== undefined) {
-      setDuration(seconds);
-      if (progressBarRef.current) {
-        progressBarRef.current.max = seconds.toString();
-      }
-    }
-  };
+    const audioContext = useContext(AudioContext)
 
-  return (
-    <div>
-      <audio
-        src={currentTrack.src}
-        ref={audioRef}
-        onLoadedMetadata={onLoadedMetadata}
-        onEnded={handleNext}
-      />
-      <div className="audio-info">
-        <div className="text">
-          <p className="title" style={{ color: '#feff9d' }}>{currentTrack.title} - {currentTrack.author}</p>
+    if (!audioContext) {
+        throw new Error('Controls must be used within an AudioContext Provider')
+    }
+
+    const { setSong } = audioContext
+
+    const onLoadedMetadata = () => {
+        const seconds = audioRef.current?.duration
+        if (seconds !== undefined) {
+            setDuration(seconds)
+            if (progressBarRef.current) {
+                progressBarRef.current.max = seconds.toString()
+            }
+        }
+    }
+
+    return (
+        <div>
+            <audio
+                src={currentTrack.src}
+                ref={audioRef}
+                onLoadedMetadata={onLoadedMetadata}
+                onEnded={() => setSong(0)}
+            />
+            <div className="audio-info">
+                <div className="text">
+                    <p className="title" style={{ color: '#feff9d' }}>
+                        {currentTrack.title} - {currentTrack.artist}
+                    </p>
+                </div>
+            </div>
         </div>
-      </div>
-    </div>
-  );
-};
-export default DisplayTrack;
+    )
+}
+
+export default DisplayTrack

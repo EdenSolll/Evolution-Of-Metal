@@ -9,6 +9,8 @@ interface Song {
     id: string
     year: number
     title: string
+    src: string
+    artist: string
 }
 
 interface Genre {
@@ -37,11 +39,8 @@ const calculateCoordinate = (
 }
 
 export default function MapComponent(): JSX.Element {
-    // Use refs
     const imageOverlay = useRef<ImageOverlay | null>(null)
     const mapContainer = useRef<Map | null>(null)
-
-    // Use memo to optimize performance
     const drawGenreLines = useMemo(() => {
         return (map: Map) => {
             map.eachLayer((layer) => {
