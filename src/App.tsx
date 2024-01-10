@@ -1,24 +1,24 @@
 import React from 'react'
 import { BrowserRouter as Router, Route, Routes } from 'react-router-dom'
-import LeafletMap from './components/Map'
 import NavBar from './components/NavBar'
+import MapComponent from './components/Map'
 
 const App: React.FC = () => {
-    return (
-        <Router>
-            <Routes>
-                <Route
-                    path="/"
-                    element={
-                        <>
-                            <NavBar />
-                            <LeafletMap />
-                        </>
-                    }
-                />
-            </Routes>
-        </Router>
-    )
+   return (
+       <Router>
+           <Routes>
+               <Route
+                  path="/"
+                  element={
+                      <>
+                          <NavBar />
+                          <MapComponent />
+                      </>
+                  }
+               />
+           </Routes>
+       </Router>
+   )
 }
 
 export default App

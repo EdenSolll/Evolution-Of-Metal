@@ -10,7 +10,6 @@ interface Song {
     year: number
     title: string
     src: string
-    artist: string
 }
 
 interface Genre {
@@ -39,8 +38,12 @@ const calculateCoordinate = (
 }
 
 export default function MapComponent(): JSX.Element {
+    // Use refs
     const imageOverlay = useRef<ImageOverlay | null>(null)
     const mapContainer = useRef<Map | null>(null)
+    const audioRef = useRef<HTMLAudioElement>(null);
+
+    // Use memo to optimize performance
     const drawGenreLines = useMemo(() => {
         return (map: Map) => {
             map.eachLayer((layer) => {
@@ -54,10 +57,25 @@ export default function MapComponent(): JSX.Element {
                 drawGenreLine(genre, map)
 
                 // Draw song lines
-                drawSongLines(genre, map)
+                drawSongLines(genre, map, handleSongSelect)
             })
         }
     }, [Genres])
+
+
+function handleSongSelect(genre: Genre, index: number) {
+ // Pause the currently playing song
+ if (audioRef.current) {
+   audioRef.current.pause();
+ }
+
+ // Load the new song and play it
+ if (audioRef.current) {
+   audioRef.current.src = genre.songs[index-1].src;
+   audioRef.current.load();
+   audioRef.current.play();
+ }
+}
 
     // Setup map and handle side effects
     useEffect(() => {
@@ -132,8 +150,8 @@ function drawGenreLine(genre: Genre, map: Map) {
     baseLine.bindTooltip(tooltip)
 }
 
-function drawSongLines(genre: Genre, map: Map) {
-    genre.songs.forEach((song: Song) => {
+function drawSongLines(genre: Genre, map: Map, handleSongSelect: Function) {
+   genre.songs.forEach((song: Song) => {
         const xCoordinateStart = calculateCoordinate(
             song.year,
             MIN_YEAR,
@@ -157,10 +175,13 @@ function drawSongLines(genre: Genre, map: Map) {
         }).addTo(map)
 
         songline.on('click', function () {
+          let index = Number(song.id)
+           handleSongSelect(genre, index);
             alert(`Song ${song.title} clicked!`)
         })
     })
 }
+
 
 function setupMap(): Map {
     return L.map('map', {

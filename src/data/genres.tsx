@@ -9,10 +9,10 @@ const Genres = [
         yAxis: 100,
         songs: [
             {
-                id: '1',
+                id: '0',
                 year: 1984,
-                title: 'Song 1',
-                artist: 'Artist',
+                title: 'Death Metal',
+                artist: 'Possessed',
                 src: Hardstyle,
             },
             {
