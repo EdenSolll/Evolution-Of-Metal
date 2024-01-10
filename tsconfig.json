@@ -6,7 +6,7 @@
         "module": "esnext",
         "skipLibCheck": true,
         "esModuleInterop": true,
-        "types": ["vite/client", "leaflet"],
+        "types": ["vite/client", "leaflet", "node"],
         "allowSyntheticDefaultImports": true,
         /* bundler mode */
         "moduleResolution": "bundler",

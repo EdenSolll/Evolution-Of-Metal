@@ -4,7 +4,7 @@ interface DisplayTrackProps {
   currentTrack: {
     src: string;
     title: string;
-    author: string;
+    artist: string;
   };
   audioRef: RefObject<HTMLAudioElement>;
   setDuration: (seconds: number) => void;
@@ -39,7 +39,7 @@ const DisplayTrack: React.FC<DisplayTrackProps> = ({
       />
       <div className="audio-info">
         <div className="text">
-          <p className="title" style={{ color: '#feff9d' }}>{currentTrack.title} - {currentTrack.author}</p>
+          <p className="title" style={{ color: '#feff9d' }}>{currentTrack.title} - {currentTrack.artist}</p>
         </div>
       </div>
     </div>

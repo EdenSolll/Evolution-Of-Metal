@@ -10,7 +10,9 @@
         "preview": "vite preview"
     },
     "dependencies": {
+        "@aws-sdk/client-s3": "^3.485.0",
         "all": "^0.0.0",
+        "aws-sdk": "^2.1532.0",
         "http": "^0.0.1-security",
         "konva": "^9.2.3",
         "leaflet": "^1.9.4",
@@ -29,6 +31,7 @@
     },
     "devDependencies": {
         "@types/leaflet": "^1.9.8",
+        "@types/node": "^20.10.8",
         "@types/react": "^18.2.37",
         "@types/react-dom": "^18.2.15",
         "@types/timelinejs3": "^3.4.7",
