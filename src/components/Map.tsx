@@ -1,14 +1,15 @@
 import { useEffect, useMemo, useRef } from 'react'
 import L, { ImageOverlay, Map } from 'leaflet'
 import Genres from '../data/genres'
-import 'leaflet/dist/leaflet.css'
 import './map.css'
+import { useTrackState } from './TrackContext'
 
 // Define interfaces
 interface Song {
     id: string
     year: number
     title: string
+    artist: string
     src: string
 }
 
@@ -39,9 +40,12 @@ const calculateCoordinate = (
 
 export default function MapComponent(): JSX.Element {
     // Use refs
+
     const imageOverlay = useRef<ImageOverlay | null>(null)
     const mapContainer = useRef<Map | null>(null)
-    const audioRef = useRef<HTMLAudioElement>(null);
+
+    //
+    const { setTrack, playSong} = useTrackState();
 
     // Use memo to optimize performance
     const drawGenreLines = useMemo(() => {
@@ -57,51 +61,76 @@ export default function MapComponent(): JSX.Element {
                 drawGenreLine(genre, map)
 
                 // Draw song lines
-                drawSongLines(genre, map, handleSongSelect)
+                drawSongLines(genre, map)
             })
         }
-    }, [Genres])
+    }, [])
 
+    const drawSongLines = (
+        genre: Genre,
+        map: Map,
+    ) => {
+        genre.songs.forEach((song: Song) => {
+            const xCoordinateStart = calculateCoordinate(
+                song.year,
+                MIN_YEAR,
+                MAX_YEAR,
+                MAP_WIDTH
+            )
+            const xCoordinateEnd = calculateCoordinate(
+                song.year,
+                MIN_YEAR,
+                MAX_YEAR,
+                MAP_WIDTH
+            )
+            const polylineCoordinates: L.LatLngTuple[] = [
+                [genre.yAxis, xCoordinateStart],
+                [genre.yAxis, xCoordinateEnd + 9],
+            ]
 
-function handleSongSelect(genre: Genre, index: number) {
- // Pause the currently playing song
- if (audioRef.current) {
-   audioRef.current.pause();
- }
+            const songline = L.polyline(polylineCoordinates, {
+                color: 'blue',
+                weight: 6,
+            }).addTo(map)
 
- // Load the new song and play it
- if (audioRef.current) {
-   audioRef.current.src = genre.songs[index-1].src;
-   audioRef.current.load();
-   audioRef.current.play();
- }
-}
+            songline.on('click', function () {
+              const trackIndex = genre.songs.indexOf(song)
+              const currentTrack = Genres[0].songs[trackIndex];
+              setTrack(trackIndex, currentTrack);
+              playSong();
+            alert(`Song ${song.title} clicked!`);
+            })
+        })
+    }
 
     // Setup map and handle side effects
+    //
     useEffect(() => {
-        try {
-            const map = setupMap()
+     if (!mapContainer.current) {
+       try {
+         const map = setupMap()
 
-            if (imageOverlay.current) {
-                map.removeLayer(imageOverlay.current)
-            }
+         if (imageOverlay.current) {
+           map.removeLayer(imageOverlay.current)
+         }
 
-            imageOverlay.current = addImageOverlay(map)
+         imageOverlay.current = addImageOverlay(map)
 
-            drawGenreLines(map)
+         drawGenreLines(map)
 
-            const yearLayers = addYearMarkers(map)
+         const yearLayers = addYearMarkers(map)
 
-            handleZoomEvents(map, yearLayers)
+         handleZoomEvents(map, yearLayers)
 
-            map.fire('zoomend')
-            mapContainer.current = map
-        } catch (error) {
-            console.error(
-                'There has been a problem with your fetch operation:',
-                error
-            )
-        }
+         map.fire('zoomend')
+         mapContainer.current = map
+       } catch (error) {
+         console.error(
+           'There has been a problem with your fetch operation:',
+           error
+         )
+       }
+     }
     }, [])
 
     return (
@@ -150,39 +179,6 @@ function drawGenreLine(genre: Genre, map: Map) {
     baseLine.bindTooltip(tooltip)
 }
 
-function drawSongLines(genre: Genre, map: Map, handleSongSelect: Function) {
-   genre.songs.forEach((song: Song) => {
-        const xCoordinateStart = calculateCoordinate(
-            song.year,
-            MIN_YEAR,
-            MAX_YEAR,
-            MAP_WIDTH
-        )
-        const xCoordinateEnd = calculateCoordinate(
-            song.year,
-            MIN_YEAR,
-            MAX_YEAR,
-            MAP_WIDTH
-        )
-        const polylineCoordinates: L.LatLngTuple[] = [
-            [genre.yAxis, xCoordinateStart],
-            [genre.yAxis, xCoordinateEnd + 9],
-        ]
-
-        const songline = L.polyline(polylineCoordinates, {
-            color: 'blue',
-            weight: 6,
-        }).addTo(map)
-
-        songline.on('click', function () {
-          let index = Number(song.id)
-           handleSongSelect(genre, index);
-            alert(`Song ${song.title} clicked!`)
-        })
-    })
-}
-
-
 function setupMap(): Map {
     return L.map('map', {
         crs: L.CRS.Simple,
@@ -226,17 +222,14 @@ function addYearMarkers(map: Map) {
 function handleZoomEvents(map: Map, yearLayers: Record<number, L.Marker>) {
     map.on('zoomend', () => {
         const zoom = map.getZoom()
-        console.log('Zoom level:', zoom)
 
         for (let yearStr in yearLayers) {
             const year = parseInt(yearStr)
             if (zoom >= 2) {
-                console.log('Adding year marker for year:', year)
                 yearLayers[year].addTo(map)
                 yearLayers[year].openTooltip()
             } else {
                 if (year % 10 !== 0) {
-                    console.log('Removing year marker for year:', year)
                     yearLayers[year].removeFrom(map)
                 }
             }

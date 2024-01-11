@@ -1,12 +1,12 @@
 import { s3, config } from '../../s3.tsx'
 
 function getUrl(id: string) {
-  var params = {
-    Bucket: config.bucket,
-    Key: id,
-    ResponseContentType: 'audio/mpeg',
- };
-  return s3.getSignedUrl('getObject', params);
+    var params = {
+        Bucket: config.bucket,
+        Key: id,
+        ResponseContentType: 'audio/mpeg',
+    }
+    return s3.getSignedUrl('getObject', params)
 }
 
 const DeathMetal = getUrl('DeathMetal.mp3')
@@ -18,7 +18,9 @@ const ImmortalRites = getUrl('ImmortalRites.mp3')
 const LeftHandPath = getUrl('LeftHandPath.mp3')
 const OverrideOfTheOverture = getUrl('OverrideOfTheOverture.mp3')
 const TheIVthCrusade = getUrl('TheIVthCrusade.mp3')
-const WhentheSunDranktheWeightofWater = getUrl('WhentheSunDranktheWeightofWater.mp3')
+const WhentheSunDranktheWeightofWater = getUrl(
+    'WhentheSunDranktheWeightofWater.mp3'
+)
 const ForVictory = getUrl('ForVictory.mp3')
 const Sorcery = getUrl('Sorcery.mp3')
 const BurnWithJesus = getUrl('BurnWithJesus.mp3')
@@ -31,6 +33,7 @@ const PitOfZombies = getUrl('PitOfZombies.mp3')
 const Remembrance = getUrl('Remembrance.mp3')
 const Eaten = getUrl('Eaten.mp3')
 const AlchemyOfTheBlackSunCult = getUrl('AlchemyOfTheBlackSunCult.mp3')
+const ThisIsTheWar = getUrl('ThisIsTheWar.mp3')
 
 const Genres = [
     {

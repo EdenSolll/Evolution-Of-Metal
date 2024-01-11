@@ -12,8 +12,9 @@ const NavBar: React.FC = () => {
             style={{
                 position: 'fixed',
                 bottom: 0,
-                zIndex: 2,
+                zIndex: 9999,
                 width: '100%',
+                overflow: 'visible',
                 backgroundColor: '#242424',
             }}
         >
