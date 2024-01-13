@@ -6,7 +6,6 @@ import { useTrackState } from './TrackContext'
 
 // Define interfaces
 interface Song {
-    id: string
     year: number
     title: string
     artist: string
