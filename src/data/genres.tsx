@@ -1,8 +1,10 @@
-import { s3, config } from '../../s3.tsx'
+import config from '../config'
+import s3 from '../s3'
+import dotenv from 'dotenv';
 
 function getUrl(id: string) {
     var params = {
-        Bucket: config.bucket,
+        Bucket: config.s3.bucket,
         Key: id,
         ResponseContentType: 'audio/mpeg',
     }
