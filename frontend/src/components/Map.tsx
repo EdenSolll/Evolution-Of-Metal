@@ -1,25 +1,13 @@
 import { useEffect, useMemo, useRef } from 'react'
 import L, { ImageOverlay, Map } from 'leaflet'
-import Genres from '../data/genres'
 import './map.css'
 import { useTrackState } from './TrackContext'
-
-// Define interfaces
-interface Song {
-    year: number
-    title: string
-    artist: string
-    src: string
-}
-
-interface Genre {
-    genre: string
-    startedYear: number
-    parentGenres: string[]
-    childGenres: string[]
-    yAxis: number
-    songs: Song[]
-}
+import {
+    Genre,
+    get_Genres,
+    get_Genre_Songs,
+    Song,
+} from '../data/api_requests'
 
 // Define constants
 const MAP_WIDTH = 540
@@ -44,7 +32,7 @@ export default function MapComponent(): JSX.Element {
     const mapContainer = useRef<Map | null>(null)
 
     //
-    const { setTrack, playSong} = useTrackState();
+    const { setTrack, playSong, songs } = useTrackState()
 
     // Use memo to optimize performance
     const drawGenreLines = useMemo(() => {
@@ -55,21 +43,21 @@ export default function MapComponent(): JSX.Element {
                 }
             })
 
-            Genres.forEach((genre: Genre) => {
-                // Draw genre lines
-                drawGenreLine(genre, map)
+            get_Genres().then((genres) => {
+                genres.forEach((genre) => {
+                    // Draw genre lines
+                    drawGenreLine(genre, map)
 
-                // Draw song lines
-                drawSongLines(genre, map)
+                    // Draw song lines
+                    drawSongLines(genre, map, songs)
+                })
             })
         }
     }, [])
 
-    const drawSongLines = (
-        genre: Genre,
-        map: Map,
-    ) => {
-        genre.songs.forEach((song: Song) => {
+    const drawSongLines = (genre: Genre, map: Map, songs: Song[]) => {
+        get_Genre_Songs(genre.id).then((song) => {
+            song.forEach((song) => {
             const xCoordinateStart = calculateCoordinate(
                 song.year,
                 MIN_YEAR,
@@ -83,8 +71,8 @@ export default function MapComponent(): JSX.Element {
                 MAP_WIDTH
             )
             const polylineCoordinates: L.LatLngTuple[] = [
-                [genre.yAxis, xCoordinateStart],
-                [genre.yAxis, xCoordinateEnd + 9],
+                [genre.y_axis, xCoordinateStart],
+                [genre.y_axis, xCoordinateEnd + 9],
             ]
 
             const songline = L.polyline(polylineCoordinates, {
@@ -93,43 +81,46 @@ export default function MapComponent(): JSX.Element {
             }).addTo(map)
 
             songline.on('click', function () {
-              const trackIndex = genre.songs.indexOf(song)
-              const currentTrack = Genres[0].songs[trackIndex];
-              setTrack(trackIndex, currentTrack);
-              playSong();
-            alert(`Song ${song.title} clicked!`);
+                const trackIndex = songs.indexOf(song)
+                const currentTrack = song
+                setTrack(trackIndex, currentTrack)
+                playSong()
+                alert(`Song ${song.title} clicked!`)
             })
         })
+        }).catch((error) => {
+          console.error('Error:', error);
+          });
     }
 
     // Setup map and handle side effects
     //
     useEffect(() => {
-     if (!mapContainer.current) {
-       try {
-         const map = setupMap()
+        if (!mapContainer.current) {
+            try {
+                const map = setupMap()
 
-         if (imageOverlay.current) {
-           map.removeLayer(imageOverlay.current)
-         }
+                if (imageOverlay.current) {
+                    map.removeLayer(imageOverlay.current)
+                }
 
-         imageOverlay.current = addImageOverlay(map)
+                imageOverlay.current = addImageOverlay(map)
 
-         drawGenreLines(map)
+                drawGenreLines(map)
 
-         const yearLayers = addYearMarkers(map)
+                const yearLayers = addYearMarkers(map)
 
-         handleZoomEvents(map, yearLayers)
+                handleZoomEvents(map, yearLayers)
 
-         map.fire('zoomend')
-         mapContainer.current = map
-       } catch (error) {
-         console.error(
-           'There has been a problem with your fetch operation:',
-           error
-         )
-       }
-     }
+                map.fire('zoomend')
+                mapContainer.current = map
+            } catch (error) {
+                console.error(
+                    'There has been a problem with your fetch operation:',
+                    error
+                )
+            }
+        }
     }, [])
 
     return (
@@ -148,7 +139,7 @@ export default function MapComponent(): JSX.Element {
 
 function drawGenreLine(genre: Genre, map: Map) {
     const genreCoordinateStart = calculateCoordinate(
-        genre.startedYear,
+        genre.start_year,
         MIN_YEAR,
         MAX_YEAR,
         MAP_WIDTH
@@ -160,8 +151,8 @@ function drawGenreLine(genre: Genre, map: Map) {
         MAP_WIDTH
     )
     const baseLineCoordinates: L.LatLngTuple[] = [
-        [genre.yAxis, genreCoordinateStart],
-        [genre.yAxis, genreCoordinateEnd],
+        [genre.y_axis, genreCoordinateStart],
+        [genre.y_axis, genreCoordinateEnd],
     ]
     const baseLine = L.polyline(baseLineCoordinates, {
         color: 'blue',

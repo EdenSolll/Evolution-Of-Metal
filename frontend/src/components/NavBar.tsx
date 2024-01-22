@@ -3,7 +3,6 @@ import { Navbar } from 'reactstrap'
 import AudioPlayer from './AudioPlayer'
 
 const NavBar: React.FC = () => {
-    console.log('NavBar rendered')
     return (
         <Navbar
             color="light"

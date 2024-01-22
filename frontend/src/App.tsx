@@ -11,11 +11,11 @@ const App: React.FC = () => {
                 <Route
                     path="/"
                     element={
-                      <TrackProvider>
-                        <>
-                            <NavBar />
-                            <MapComponent />
-                        </>
+                        <TrackProvider>
+                            <>
+                                <NavBar />
+                                <MapComponent />
+                            </>
                         </TrackProvider>
                     }
                 />

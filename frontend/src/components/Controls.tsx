@@ -9,25 +9,25 @@ import {
 } from 'react-icons/io5'
 
 interface ControlsProps {
-   audioRef: React.MutableRefObject<HTMLAudioElement>;
-   progressBarRef: React.MutableRefObject<HTMLInputElement>;
-   duration: number;
-   setTimeProgress: React.Dispatch<React.SetStateAction<number>>;
-   handleNext: () => void;
-   playSong: () => void;
-   pauseSong: () => void;
-   isPlaying: boolean,
+    audioRef: React.MutableRefObject<HTMLAudioElement>
+    progressBarRef: React.MutableRefObject<HTMLInputElement>
+    duration: number
+    setTimeProgress: React.Dispatch<React.SetStateAction<number>>
+    handleNext: () => void
+    playSong: () => void
+    pauseSong: () => void
+    isPlaying: boolean
 }
 
 const Controls: React.FC<ControlsProps> = ({
-   audioRef,
-   progressBarRef,
-   duration,
-   setTimeProgress,
-   handleNext,
-   playSong,
-   pauseSong,
-   isPlaying,
+    audioRef,
+    progressBarRef,
+    duration,
+    setTimeProgress,
+    handleNext,
+    playSong,
+    pauseSong,
+    isPlaying,
 }) => {
     const [volume, setVolume] = useState(60)
     const [muteVolume, setMuteVolume] = useState(false)
@@ -54,14 +54,13 @@ const Controls: React.FC<ControlsProps> = ({
         }
     }, [volume, audioRef, muteVolume])
 
-const handleTogglePlay = () => {
- if (isPlaying) {
-  pauseSong();
-
- } else {
-  playSong();
- }
-};
+    const handleTogglePlay = () => {
+        if (isPlaying) {
+            pauseSong()
+        } else {
+            playSong()
+        }
+    }
 
     return (
         <div
