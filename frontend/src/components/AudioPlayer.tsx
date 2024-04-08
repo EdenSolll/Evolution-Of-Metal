@@ -3,6 +3,7 @@ import DisplayTrack from './DisplayTrack'
 import Controls from './Controls'
 import ProgressBar from './ProgressBar'
 import { useTrackState } from './TrackContext'
+import { getUrl } from '../data/s3.tsx'
 
 const AudioPlayer = () => {
     const {
@@ -22,21 +23,27 @@ const AudioPlayer = () => {
         null
     ) as React.MutableRefObject<HTMLInputElement>
 
-    useEffect(() => {
-        if (audioRef.current) {
-            audioRef.current.src = ''
-            audioRef.current.src = currentTrack.src
-            audioRef.current.load()
-
-            audioRef.current.addEventListener('loadedmetadata', () => {
-                setDuration(audioRef.current.duration)
-            })
-
-            if (isPlaying) {
-                audioRef.current.play().catch(console.error)
+useEffect(() => {
+    if (audioRef.current) {
+        (async () => {
+            const url = audioRef.current.src;
+            const filename = url.split('/').pop();
+            if (filename) {
+                const songUrl = await getUrl(filename);
+                if (songUrl) {
+                    audioRef.current.src = songUrl;
+                    audioRef.current.load();
+                    audioRef.current.addEventListener('loadedmetadata', () => {
+                        setDuration(audioRef.current.duration);
+                    });
+                    if (isPlaying) {
+                        audioRef.current.play().catch(console.error);
+                    }
+                }
             }
-        }
-    }, [currentTrack, isPlaying])
+        })();
+    }
+}, [currentTrack, isPlaying]);
 
     const handleNext = () => {
         const nextTrackIndex = (trackIndex + 1) % songs.length

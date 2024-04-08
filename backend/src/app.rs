@@ -1,9 +1,6 @@
 use crate::db::*;
-use actix_web::web;
-use actix_web::web::Data;
-use sqlx::postgres::PgPoolOptions;
-use sqlx::Pool;
-use sqlx::Postgres;
+use actix_web::web::{self, Data};
+use sqlx::{postgres::PgPoolOptions, Pool, Postgres};
 use std::env;
 
 pub struct AppState {
@@ -19,8 +16,7 @@ pub async fn get_app_data() -> Data<AppState> {
         .connect(&env::var("DATABASE_URL").expect("DATABASE_URL Not set"))
         .await
         .expect("Could not connect to database");
-    println!("Successfully opened songarchive db connection");
-
+    println!("Successfully opened conditional db connection");
     Data::new(AppState {
         db: songarchive_pool,
     })

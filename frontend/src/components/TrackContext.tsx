@@ -94,8 +94,25 @@ export const TrackProvider = ({ children }: TrackProviderProps) => {
         }
     }, [songs])
 
+    useEffect(() => {
+        const audioEl = audioRef.current;
+        if (audioEl) {
+            audioEl.addEventListener('canplaythrough', playSong);
+        }
+        return () => {
+            if (audioEl) {
+                audioEl.removeEventListener('canplaythrough', playSong);
+            }
+        };
+    }, []);
+
     const playSong = () => {
-        dispatch({ type: START_PLAYING })
+        dispatch({ type: START_PLAYING });
+        if (audioRef.current) {
+          audioRef.current.play().catch((error) => {
+            console.log("Failed to play audio: ", error)
+            })
+      }
     }
 
     useEffect
@@ -113,6 +130,7 @@ export const TrackProvider = ({ children }: TrackProviderProps) => {
         </TrackContext.Provider>
     )
 }
+
 
 export const useTrackState = () => {
     const context = useContext(TrackContext)
