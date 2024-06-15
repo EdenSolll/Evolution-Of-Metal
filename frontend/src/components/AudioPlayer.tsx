@@ -2,12 +2,11 @@ import { useRef, useState } from "react";
 import Player from "./AudioPlayer/Player";
 import Song from "./AudioPlayer/Song";
 import "../styles/app.scss";
-
-// Importing DATA
-import data from "./Data";
 import Nav from "./AudioPlayer/Nav";
+import { get_Songs } from "../data/api_requests";
+
 function AudioPlayer() {
-  const [songs, setSongs] = useState(data());
+  const [songs, setSongs] = useState(get_Songs());
   const [currentSong, setCurrentSong] = useState(songs[0]);
   const [isPlaying, setIsPlaying] = useState(false);
   const [libraryStatus, setLibraryStatus] = useState(false);
