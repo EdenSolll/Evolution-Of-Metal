@@ -1,110 +1,67 @@
-import { useRef, useState, useEffect } from 'react'
-import DisplayTrack from './DisplayTrack'
-import Controls from './Controls'
-import ProgressBar from './ProgressBar'
-import { useTrackState } from './TrackContext'
-import { getUrl } from '../data/s3.tsx'
+import { useRef, useState } from "react";
+import Player from "./AudioPlayer/Player";
+import Song from "./AudioPlayer/Song";
+import "../styles/app.scss";
 
-const AudioPlayer = () => {
-    const {
-        currentTrack,
-        setTrack,
-        trackIndex,
-        isPlaying,
-        playSong,
-        pauseSong,
-        audioRef,
-        songs,
-    } = useTrackState()
-    const [timeProgress, setTimeProgress] = useState(0)
-    const [duration, setDuration] = useState(0)
+// Importing DATA
+import data from "./Data";
+import Nav from "./AudioPlayer/Nav";
+function AudioPlayer() {
+  const [songs, setSongs] = useState(data());
+  const [currentSong, setCurrentSong] = useState(songs[0]);
+  const [isPlaying, setIsPlaying] = useState(false);
+  const [libraryStatus, setLibraryStatus] = useState(false);
+  const audioRef = useRef(null);
+  const [songInfo, setSongInfo] = useState({
+    currentTime: 0,
+    duration: 0,
+    animationPercentage: 0,
+  });
+  const timeUpdateHandler = (e) => {
+    const current = e.target.currentTime;
+    const duration = e.target.duration;
+    //calculating percentage
+    const roundedCurrent = Math.round(current);
+    const roundedDuration = Math.round(duration);
+    const animation = Math.round((roundedCurrent / roundedDuration) * 50);
+    console.log();
+    setSongInfo({
+      currentTime: current,
+      duration,
+      animationPercentage: animation,
+    });
+  };
+  const songEndHandler = async () => {
+    let currentIndex = songs.findIndex((song) => song.id === currentSong.id);
 
-    const progressBarRef = useRef<HTMLInputElement>(
-        null
-    ) as React.MutableRefObject<HTMLInputElement>
+    await setCurrentSong(songs[(currentIndex + 1) % songs.length]);
 
-useEffect(() => {
-    if (audioRef.current) {
-        (async () => {
-            const url = audioRef.current.src;
-            const filename = url.split('/').pop();
-            if (filename) {
-                const songUrl = await getUrl(filename);
-                if (songUrl) {
-                    audioRef.current.src = songUrl;
-                    audioRef.current.load();
-                    audioRef.current.addEventListener('loadedmetadata', () => {
-                        setDuration(audioRef.current.duration);
-                    });
-                    if (isPlaying) {
-                        audioRef.current.play().catch(console.error);
-                    }
-                }
-            }
-        })();
-    }
-}, [currentTrack, isPlaying]);
-
-    const handleNext = () => {
-        const nextTrackIndex = (trackIndex + 1) % songs.length
-        const nextTrack = songs[nextTrackIndex]
-        setTrack(nextTrackIndex, nextTrack)
-    }
-
-    return (
-        <div
-            className="audio-player-wrapper"
-            style={{
-                display: 'flex',
-                flexDirection: 'column',
-                alignItems: 'left',
-            }}
-        >
-            <div
-                className="audio player"
-                style={{ display: 'flex', gap: '10px' }}
-            >
-                <div
-                    className="inner"
-                    style={{
-                        display: 'flex',
-                        flexDirection: 'row',
-                        alignItems: 'left',
-                        gap: '10px',
-                    }}
-                >
-                    <Controls
-                        audioRef={audioRef}
-                        progressBarRef={progressBarRef}
-                        duration={duration}
-                        setTimeProgress={setTimeProgress}
-                        handleNext={handleNext}
-                        playSong={playSong}
-                        pauseSong={pauseSong}
-                        isPlaying={isPlaying}
-                    />
-                    <ProgressBar
-                        {...{
-                            progressBarRef,
-                            audioRef,
-                            timeProgress,
-                            setTimeProgress,
-                            duration,
-                        }}
-                    />
-                    <DisplayTrack
-                        {...{
-                            currentTrack,
-                            audioRef,
-                            setDuration,
-                            progressBarRef,
-                            handleNext,
-                        }}
-                    />
-                </div>
-            </div>
-        </div>
-    )
+    if (isPlaying) audioRef.current.play();
+  };
+  return (
+    <div>
+      <Song currentSong={currentSong} />
+      <Player
+        id={songs.id}
+        songs={songs}
+        songInfo={songInfo}
+        setSongInfo={setSongInfo}
+        audioRef={audioRef}
+        isPlaying={isPlaying}
+        setIsPlaying={setIsPlaying}
+        currentSong={currentSong}
+        setCurrentSong={setCurrentSong}
+        setSongs={setSongs}
+      />
+      <audio
+        onLoadedMetadata={timeUpdateHandler}
+        onTimeUpdate={timeUpdateHandler}
+        src={currentSong.audio}
+        ref={audioRef}
+        onEnded={songEndHandler}
+      ></audio>
+    </div>
+  );
 }
 
-export default AudioPlayer
+export default AudioPlayer;

@@ -1,7 +1,6 @@
 import { useEffect, useMemo, useRef } from 'react'
 import L, { ImageOverlay, Map } from 'leaflet'
 import './map.css'
-import { useTrackState } from './TrackContext'
 import {
     Genre,
     get_Genres,
@@ -32,7 +31,7 @@ export default function MapComponent(): JSX.Element {
     const mapContainer = useRef<Map | null>(null)
 
     //
-    const { setTrack, playSong, songs } = useTrackState()
+    // const { setTrack, playSong, songs } = useTrackState()
 
     // Use memo to optimize performance
     const drawGenreLines = useMemo(() => {
@@ -80,17 +79,17 @@ export default function MapComponent(): JSX.Element {
                 weight: 6,
             }).addTo(map)
 
-            songline.on('click', function () {
-                const trackIndex = songs.indexOf(song)
-                const currentTrack = song
-                setTrack(trackIndex, currentTrack)
-                playSong()
-                alert(`Song ${song.title} clicked!`)
-            })
-        })
-        }).catch((error) => {
-          console.error('Error:', error);
-          });
+//            songline.on('click', function () {
+//                const trackIndex = songs.indexOf(song)
+//                const currentTrack = song
+//                setTrack(trackIndex, currentTrack)
+//                playSong()
+//                alert(`Song ${song.title} clicked!`)
+//             })
+         })
+//         }).catch((error) => {
+//           console.error('Error:', error);
+           });
     }
 
     // Setup map and handle side effects
