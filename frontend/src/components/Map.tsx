@@ -6,7 +6,9 @@ import {
     get_Genres,
     get_Genre_Songs,
     Song,
+    get_Songs,
 } from '../data/api_requests'
+import AudioPlayer from './AudioPlayer';
 
 // Define constants
 const MAP_WIDTH = 540
@@ -14,7 +16,6 @@ const MAP_HEIGHT = 540
 const MAX_YEAR = 2024
 const MIN_YEAR = 1970
 
-// Helper function to calculate coordinates
 const calculateCoordinate = (
     year: number,
     minYear: number,
@@ -25,15 +26,10 @@ const calculateCoordinate = (
 }
 
 export default function MapComponent(): JSX.Element {
-    // Use refs
 
     const imageOverlay = useRef<ImageOverlay | null>(null)
     const mapContainer = useRef<Map | null>(null)
 
-    //
-    // const { setTrack, playSong, songs } = useTrackState()
-
-    // Use memo to optimize performance
     const drawGenreLines = useMemo(() => {
         return (map: Map) => {
             map.eachLayer((layer) => {
@@ -44,11 +40,8 @@ export default function MapComponent(): JSX.Element {
 
             get_Genres().then((genres) => {
                 genres.forEach((genre) => {
-                    // Draw genre lines
                     drawGenreLine(genre, map)
-
-                    // Draw song lines
-                    drawSongLines(genre, map, songs)
+                    drawSongLines(genre, map, get_Songs())
                 })
             })
         }
@@ -79,21 +72,19 @@ export default function MapComponent(): JSX.Element {
                 weight: 6,
             }).addTo(map)
 
-//            songline.on('click', function () {
-//                const trackIndex = songs.indexOf(song)
-//                const currentTrack = song
-//                setTrack(trackIndex, currentTrack)
-//                playSong()
-//                alert(`Song ${song.title} clicked!`)
-//             })
+            songline.on('click', function () {
+                const trackIndex = songs.indexOf(song)
+                const currentTrack = song
+                setTrack(trackIndex, currentTrack)
+                AudioPlayer()
+                alert(`Song ${song.title} clicked!`)
+            })
          })
-//         }).catch((error) => {
-//           console.error('Error:', error);
+         }).catch((error) => {
+           console.error('Error:', error);
            });
     }
 
-    // Setup map and handle side effects
-    //
     useEffect(() => {
         if (!mapContainer.current) {
             try {

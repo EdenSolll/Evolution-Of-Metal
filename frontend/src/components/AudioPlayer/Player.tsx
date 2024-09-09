@@ -5,8 +5,22 @@ import {
     faAngleRight,
     faPause,
 } from "@fortawesome/free-solid-svg-icons";
+import { Song } from "../../data/api_requests.tsx"
 
-const Player = ({
+
+export interface PlayerProps {
+  currentSong: Song | null;
+  isPlaying: boolean;
+  setIsPlaying: React.Dispatch<React.SetStateAction<boolean>>;
+  audioRef: React.MutableRefObject<HTMLAudioElement | null>;
+  setSongInfo: React.Dispatch<React.SetStateAction<{ currentTime: number; duration: number; animationPercentage: number }>>;
+  songInfo: { currentTime: number; duration: number; animationPercentage: number };
+  songs: Song[];
+  setCurrentSong: React.Dispatch<React.SetStateAction<Song | null>>;
+  setSongs: React.Dispatch<React.SetStateAction<Song[]>>;
+}
+
+const Player: React.FC<PlayerProps> = ({
     currentSong,
     isPlaying,
     setIsPlaying,
@@ -15,11 +29,10 @@ const Player = ({
     songInfo,
     songs,
     setCurrentSong,
-    id,
     setSongs,
 }) => {
-    //useEffect
-    const activeLibraryHandler = (nextPrev) => {
+
+    const activeLibraryHandler = (nextPrev: Song) => {
         const newSongs = songs.map((song) => {
             if (song.id === nextPrev.id) {
                 return {
@@ -37,25 +50,25 @@ const Player = ({
         console.log("Hey from useEffect form player JS");
     };
     //Event Handlers
-    const dragHandler = (e) => {
+    const dragHandler = (e: React.ChangeEvent<HTMLInputElement>) => {
         audioRef.current.currentTime = e.target.value;
         setSongInfo({ ...songInfo, currentTime: e.target.value });
     };
     const playSongHandler = () => {
         if (isPlaying) {
-            audioRef.current.pause();
+            audioRef.current?.pause();
             setIsPlaying(!isPlaying);
         } else {
-            audioRef.current.play();
+            audioRef.current?.play();
             setIsPlaying(!isPlaying);
         }
     };
 
-    const getTime = (time) =>
+    const getTime = (time: number) =>
         Math.floor(time / 60) + ":" + ("0" + Math.floor(time % 60)).slice(-2);
     const skipTrackHandler = async (direction) => {
         let currentIndex = songs.findIndex(
-            (song) => song.id === currentSong.id
+            (song) => song.id === currentSong?.id
         );
         if (direction === "skip-forward") {
             await setCurrentSong(songs[(currentIndex + 1) % songs.length]);
@@ -74,7 +87,6 @@ const Player = ({
         }
         if (isPlaying) audioRef.current.play();
     };
-    //adding the styles
     const trackAnim = {
         transform: `translateX(${songInfo.animationPercentage}%)`,
     };
@@ -83,10 +95,6 @@ const Player = ({
             <div className="time-control">
                 <p>{getTime(songInfo.currentTime)}</p>
                 <div
-                    style={{
-                        background:
-`linear-gradient(to right, ${currentSong.color[0]}, ${currentSong.color[1]})`,
-                    }}
                     className="track"
                 >
                     <input
@@ -105,21 +113,21 @@ const Player = ({
             <div className="play-control">
                 <FontAwesomeIcon
                     onClick={() => skipTrackHandler("skip-back")}
-                    size="2x"
+                    size="1x"
                     className="skip-back"
                     icon={faAngleLeft}
                 />
                 {!isPlaying ? (
                     <FontAwesomeIcon
                         onClick={playSongHandler}
-                        size="2x"
+                        size="1x"
                         className="play"
                         icon={faPlay}
                     />
                 ) : (
                     <FontAwesomeIcon
                         onClick={playSongHandler}
-                        size="2x"
+                        size="1x"
                         className="pause"
                         icon={faPause}
                     />
@@ -127,7 +135,7 @@ const Player = ({
 
                 <FontAwesomeIcon
                     onClick={() => skipTrackHandler("skip-forward")}
-                    size="2x"
+                    size="1x"
                     className="skip-forward"
                     icon={faAngleRight}
                 />

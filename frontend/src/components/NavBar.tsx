@@ -15,9 +15,8 @@ const NavBar: React.FC = () => {
                 width: '100%',
                 overflow: 'visible',
                 backgroundColor: '#242424',
-                height : 100
-            }}
-        >
+                height : 120
+            }}>
             <AudioPlayer />
         </Navbar>
     )
