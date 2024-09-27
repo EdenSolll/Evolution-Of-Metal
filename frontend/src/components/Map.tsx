@@ -5,8 +5,8 @@ import {
     Genre,
     get_Genres,
     get_Genre_Songs,
-    Song,
-    get_Songs,
+//     get_Songs,
+//     Song,
 } from '../data/api_requests'
 import AudioPlayer from './AudioPlayer';
 
@@ -41,13 +41,13 @@ export default function MapComponent(): JSX.Element {
             get_Genres().then((genres) => {
                 genres.forEach((genre) => {
                     drawGenreLine(genre, map)
-                    drawSongLines(genre, map, get_Songs())
+                    drawSongLines(genre, map)
                 })
             })
         }
     }, [])
 
-    const drawSongLines = (genre: Genre, map: Map, songs: Song[]) => {
+    const drawSongLines = (genre: Genre, map: Map) => {
         get_Genre_Songs(genre.id).then((song) => {
             song.forEach((song) => {
             const xCoordinateStart = calculateCoordinate(
@@ -73,9 +73,9 @@ export default function MapComponent(): JSX.Element {
             }).addTo(map)
 
             songline.on('click', function () {
-                const trackIndex = songs.indexOf(song)
-                const currentTrack = song
-                setTrack(trackIndex, currentTrack)
+                // const trackIndex = songs.indexOf(song)
+                // const currentTrack = song
+                // setTrack(trackIndex, currentTrack)
                 AudioPlayer()
                 alert(`Song ${song.title} clicked!`)
             })

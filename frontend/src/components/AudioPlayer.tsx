@@ -26,12 +26,12 @@ function AudioPlayer() {
   }, []);
 
   useEffect(() => {
-    if (audioRef.current != null) {
+    if (audioRef.current) {
         (async () => {
             const filename = audioRef.current?.src.split('/').pop();
             if (filename) {
                 const songUrl = await getUrl(filename);
-                if (songUrl) {
+                if (songUrl && audioRef.current) {
                     audioRef.current.src = songUrl;
                     audioRef.current.load();
                     if (isPlaying) {

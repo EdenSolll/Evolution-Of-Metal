@@ -42,13 +42,16 @@ export function get_Genres(): Promise<Genre[]> {
         })
 }
 
-export function get_Genre_Songs(genre_id: number): Promise<Song[]> {
-    return fetch(`http://localhost:3000/songs?genre_id=${genre_id}`)
+export function get_Genre_Songs(genreid: number): Promise<Song[]> {
+    return fetch(`http://localhost:3000/songs`)
         .then((response) => {
             if (!response.ok) {
                 throw new Error(`HTTP error! status: ${response.status}`)
             }
             return response.json()
+        })
+        .then((songs: Song[]) => {
+          return songs.filter(song => song.genre_id === genreid)
         })
         .catch((error) => {
             console.error('Error:', error)
